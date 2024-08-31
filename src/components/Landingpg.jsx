@@ -51,8 +51,8 @@ export default function Landing(){
       </video>
       <div className='overlay'></div>
       <div className='text '>
-        <h2 className="text-[0.8rem] md:text-[1.2rem] lg:text-[3rem] xl:text-[4.7rem] hidden2">CESA & CSI</h2>
-        <h3  className="text-[0.6rem] md:text-[1.1rem] lg:text-[2rem] xl:text-[3.7rem] hidden2">VASANTDATA PATIL</h3>
+        <h2 className="text-[0.8rem] md:text-[1.2rem] lg:text-[3rem] xl:text-[6rem] hidden2">CESA & CSI</h2>
+        <h3  className="text-[0.6rem] md:text-[1.1rem] lg:text-[2rem] xl:text-[3.7rem] hidden2">VPPCOE-VA</h3>
         <p  className="text-[05rem] md:text-[0.8rem] lg:text-[1rem] xl:text-[1.1rem] hidden2">Computer Engineering Student Association</p>
         <div className="hidden2">
         <a href='/contact-us hidden2'>Contact us</a>
@@ -69,7 +69,7 @@ export default function Landing(){
       </div>
      
       </div>
-      <div className="slider  ">
+      <div className="slider bg-gradient-to-br from-purple-700 to-blue-900 ">
 	<div className="slide-track z-4">
 		<div className="slide z-4">
 			<Image src={oneIMG} height="100" width="250" alt="" />

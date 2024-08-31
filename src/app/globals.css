@@ -14,6 +14,17 @@ body{
   transition:all 500ms;
 
 }
+.RoundedCard2:hover{
+  box-shadow: #000000;
+  transform: translateY(-10px);
+  transition:all 500ms;
+
+}
+.RoundedCard2{
+  transition:all 500ms;
+
+}
+
 .RoundedCard{
   transition:all 2s;
 
@@ -126,8 +137,7 @@ transform:translateY(0px);
 }
 
 .slider {
-  background: #0e0c15;
-  background-color: #00042a;
+  background: linear-gradient(to bottom right, #6b21a8,#1e3a8a);
   height: 100px;
   margin: auto;
   overflow: hidden;
@@ -245,7 +255,7 @@ transform:translateY(0px);
 
 .text h2
 {
-  font-size: 5rem;
+  font-size: 8rem;
   font-weight: 800;
   color: #fff;
   margin-top: 130px;

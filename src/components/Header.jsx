@@ -55,10 +55,12 @@ export default function Header() {
               href={"/about-us"}
               className="cursor-pointer hover:text-white"
             >
-              About us
+              About Us
             </Link>
+            <Link href={'/our-work'} className="cursor-pointer hover:text-white">Events</Link>
+            <Link href={'/our-work'} className="cursor-pointer hover:text-white">Gallary</Link>
             <Link href={'/contact-us'} className="cursor-pointer hover:text-white">Contact us</Link>
-            <Link href={'/our-work'} className="cursor-pointer hover:text-white">Our Work</Link>
+           
           </ul>
         </div>
         <div className="text-n-1 contactOnHover xl:inline-flex hidden cursor-pointer  roun

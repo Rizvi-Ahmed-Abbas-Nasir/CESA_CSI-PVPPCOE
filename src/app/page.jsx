@@ -6,6 +6,7 @@ import Projects from "@/components/Projects";
 import Services from "@/components/Services";
 import Footer from "@/components/Footer";
 import ProductServices from "@/components/ProductServices";
+import LogoPage from "../components/LogoPage"
 
 export default function Home() {
   
@@ -14,6 +15,7 @@ export default function Home() {
    <div className="bg-[#0e0c15] w-full h-[100vh]">
     
     <Landing />
+    <LogoPage />
     {/* <AboutUs/>
     <Projects/>
     <ProductServices /> */}
