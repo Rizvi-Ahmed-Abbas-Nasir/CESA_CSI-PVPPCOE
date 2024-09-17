@@ -1,5 +1,4 @@
 "use client";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 
 
@@ -112,7 +111,6 @@ export default function page() {
            </div>
            
         </div>
-        <Footer/>
     </div>
   )
 }

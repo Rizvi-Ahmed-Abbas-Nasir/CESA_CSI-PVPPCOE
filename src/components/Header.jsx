@@ -1,19 +1,18 @@
 "use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Logo from "../Assets/IMG/cesapng.png";
-import { useState } from "react";
-import { useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; // For App Router, if using Pages Router, use next/router
 
 export default function Header() {
-
   const [active, setActive] = useState(false);
+  const [mounted, setMounted] = useState(false); // Ensures client-side rendering
+  const pathname = usePathname(); // Get the current path
 
   useEffect(() => {
-    if (typeof document !== "undefined") {
-      //   var hiddenElements1 = document.querySelectorAll(".hidden1");
-      //   OnScrollAnimation(hiddenElements1);
-    }
+    setMounted(true);
 
     if (typeof window !== "undefined") {
       window.addEventListener("scroll", isSticky);
@@ -24,7 +23,8 @@ export default function Header() {
         window.removeEventListener("scroll", isSticky);
       }
     };
-  });
+  }, []);
+
   const isSticky = (e) => {
     const header = document.querySelector(".header-section");
     const scrollTop = window.scrollY;
@@ -33,9 +33,12 @@ export default function Header() {
       : header.classList.remove("is-sticky");
   };
 
+  // If the component hasn't mounted, don't render anything
+  if (!mounted) return null;
+
   return (
-    <div className="fixed Header w-full header-section top-0 flex justify-center left-0  z-50  border-b border-n-7  lg:backdrop-blur-sm  ">
-      <div className=" lg:h-[10.5vh] h-[11vh] w-full flex justify-between items-center  px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
+    <div className="fixed Header w-full header-section top-0 flex justify-center left-0 z-50 border-b border-n-7 lg:backdrop-blur-sm">
+      <div className="lg:h-[10.5vh] h-[10vh] w-full flex justify-between items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <div className="flex items-center gap-1 md:gap-2 w-[20rem]">
           <div>
             <Image className="w-[4rem] md:w-[5rem]" src={Logo} width={50} height={50} />
@@ -46,34 +49,67 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="  hidden uppercase w-[45%] xl:flex justify-start text-n-1 transition-colors hover:text-color-1">
+        <div className="hidden uppercase w-[45%] xl:flex justify-start text-n-1 transition-colors hover:text-color-1">
           <ul className="flex justify-center gap-15 text-xs text-neutral-100">
-            <Link href={"/"} className="cursor-pointer hover:text-white">
-              Home
-            </Link>
-            <Link
-              href={"/about-us"}
-              className="cursor-pointer hover:text-white"
-            >
-              About Us
-            </Link>
-            <Link href={'/our-work'} className="cursor-pointer hover:text-white">Events</Link>
-            <Link href={'/our-work'} className="cursor-pointer hover:text-white">Gallary</Link>
-            <Link href={'/contact-us'} className="cursor-pointer hover:text-white">Contact us</Link>
-           
+            <li>
+              <Link href="/" className={`${
+                    pathname === "/"
+                      ? "bg-blue-500 text-[1rem] p-2 rounded"
+                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                  }`}>
+                  Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/about-us" className={`${
+                    pathname === "/about-us"
+                      ? "bg-blue-500 text-[1rem] p-2 rounded"
+                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                  }`}>
+                  About Us
+              </Link>
+            </li>
+            <li>
+              <Link href="/our-work" className={`${
+                    pathname === "/our-work"
+                      ? "bg-blue-500 text-[1rem] p-2 rounded"
+                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                  }`}>
+                  Events
+              </Link>
+            </li>
+            <li>
+              <Link href="/gallary" className={`${
+                    pathname === "/gallary"
+                      ? "bg-blue-500 text-[1rem] p-2 rounded"
+                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                  }`}>
+                  Gallery
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact-us" className={`${
+                    pathname === "/contact-us"
+                      ? "bg-blue-500 text-[1rem] p-2 rounded"
+                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                  }`}>
+                  Contact Us
+              </Link>
+            </li>
           </ul>
         </div>
-        <div className="text-n-1 contactOnHover xl:inline-flex hidden cursor-pointer  roun
-        ded-md text-xs  w-[7rem] border-[3px] button relative  items-center justify-center h-11 transition-colors hover:text-color-1  ">
-          <Link href={'/contact-us'}>
-          <button>
-            <h3 className="uppercase">Register</h3>
-          </button>
-          </Link>
+        <Link href="/login" className="cursor-pointer ">
+        <div className="text-n-1 contactOnHover xl:inline-flex hidden cursor-pointer rounded-md text-xs w-[7rem] border-[3px] button relative items-center justify-center h-11 transition-colors hover:text-color-1">
+            <h4>
+             
+                Register
+            </h4>
         </div>
+        </Link>
+
         <div
-          className="HamBurgerIcon  flex justify-center h-[8vh] items-center w-[4rem] rounded-2xl xl:hidden border-[2px]"
-          onChange={() => setActive(!active)}
+          className="HamBurgerIcon flex justify-center h-[8vh] items-center w-[4rem] rounded-2xl xl:hidden border-[2px]"
+          onClick={() => setActive(!active)}
         >
           <label
             className="label flex h-[13vh] justify-center justify-items-center"
@@ -84,23 +120,22 @@ export default function Header() {
             <span className="span"></span>
           </label>
         </div>
-        <div className={active ? "Sub-SideNav-on-click" : "Sub-SideNav "}>
-
+        <div className={active ? "Sub-SideNav-on-click" : "Sub-SideNav"}>
           <div className="menuItems">
-            <Link href={"/"}>
+            <Link href="/">
               <h4>Home</h4>
             </Link>
-            <Link href={"/about-us"}>
+            <Link href="/about-us">
               <h4>About Us</h4>
             </Link>
-            <Link href={"/contact-us"}>
+            <Link href="/contact-us">
               <h4>Contact Us</h4>
             </Link>
-            <Link href={"/our-work"}>
+            <Link href="/our-work">
               <h4>Our Work</h4>
             </Link>
-            </div>
           </div>
+        </div>
       </div>
     </div>
   );

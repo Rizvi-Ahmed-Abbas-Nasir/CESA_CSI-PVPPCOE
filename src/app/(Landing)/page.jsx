@@ -1,12 +1,13 @@
 "use client";
 import Image from "next/image";
-import Landing from "../components/Landingpg";
+import Landing from "@/components/Landingpg";
 import AboutUs from "@/components/AboutUs";
 import Projects from "@/components/Projects";
 import Services from "@/components/Services";
-import Footer from "@/components/Footer";
 import ProductServices from "@/components/ProductServices";
-import LogoPage from "../components/LogoPage"
+import LogoPage from "@/components/LogoPage";
+import Footer from "@/components/Footer";
+
 
 export default function Home() {
   
@@ -19,8 +20,7 @@ export default function Home() {
     {/* <AboutUs/>
     <Projects/>
     <ProductServices /> */}
-    <Footer/>
-    
+    <Footer />
    </div>
   );
 }
