@@ -6,11 +6,12 @@ import RegisterModel from "@/models/register";  // Ensure this path is correct
 
 export async function POST(req) {
     try {
-        // Uncomment and implement API key validation if needed
-        // const apiKey = req.headers.get("Authorization");
-        // if (!isApiValid(apiKey)) {
-        //     return NextResponse.json({ message: "Unauthorized access" }, { status: 401 });
-        // }
+
+
+        const apiKey = req.headers.get("Authorization");
+        if (!isApiValid(apiKey)) {
+            return NextResponse.json({ message: "Unauthorized access" }, { status: 401 });
+        }
 
         // Connect to MongoDB
         try {

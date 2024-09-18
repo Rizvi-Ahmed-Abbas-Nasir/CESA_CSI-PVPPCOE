@@ -5,8 +5,12 @@ import re from "../../Assets/IMG/register.svg"
 import lo from "../../Assets/IMG/log.svg"
 import axios from "axios";
 import Image from "next/image";
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginAndRegister() {
+
+  const router = useRouter();
   const [error, setError] = useState("");
   const [registerData, setRegisterData] = useState({
     StdName: "",
@@ -14,6 +18,66 @@ export default function LoginAndRegister() {
     StdPassword: "",
     StdConfirmPassword : ""
   });
+
+  const [loginData, setLoginData] = useState({
+    StdEmail: "",
+    StdPassword: "",
+  });
+
+  const HandlesubmitLogin = async (e) => {
+    e.preventDefault();
+  
+    try {
+      // Prepare the login data
+      const data = {
+        email: loginData.StdEmail,
+        password: loginData.StdPassword,
+      };
+  
+      // Ensure both email and password are provided
+      if (!data.email || !data.password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+  
+      // Call signIn with credentials
+      const res = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
+  
+      // Handle the response
+      if (res?.error) {
+        // Log the error for debugging
+        console.error("Sign-in error:", res.error);
+  
+        // Check the type of error to give more specific feedback
+        if (res.error === "Invalid password.") {
+          alert("Incorrect password. Please try again.");
+        } else if (res.error === "No user found with this email.") {
+          alert("No account found with this email address.");
+        } else {
+          alert("Invalid credentials or an error occurred. Please try again.");
+        }
+  
+        return;
+      }
+  
+      if (res?.ok) {
+        // Successful login
+        alert("Login successful! Redirecting...");
+        
+        // Redirect to the dashboard
+        router.push("/StudentDashBoard");
+      }
+    } catch (error) {
+      // Handle any unexpected errors
+      console.error("Unexpected error during sign-in:", error);
+      alert("An unexpected error occurred. Please try again later.");
+    }
+  };
+  
 
   // Handle registration form submission
   const handleSubmitRegister = async (e) => {
@@ -36,10 +100,12 @@ export default function LoginAndRegister() {
         StudentPassword: registerData.StdPassword,
       };
 
+      const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
       // Send data via axios
       const response = await axios.post("http://localhost:3000/api/StudentRegistration", data, {
         headers: { 
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+          Authorization: `${API_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -75,7 +141,16 @@ export default function LoginAndRegister() {
       ...prevState,
       [name]: value
     }));
+
+    setLoginData((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
   };
+
+
+
+
 
   const containerRef = useRef(null);
 
@@ -106,15 +181,27 @@ export default function LoginAndRegister() {
       <div className="forms-container">
         <div className="signin-signup">
           {/* Sign In Form */}
-          <form action="" className="sign-in-form">
+          <form onSubmit={HandlesubmitLogin} className="sign-in-form">
             <h2 className="title">Sign In</h2>
             <div className="input-field">
               <i className="fas fa-user"></i>
-              <input type="text" placeholder="Username" />
+              <input 
+              type="text"
+               placeholder="Username"
+                  name="StdEmail"
+               value={loginData.StdEmail}
+               onChange={handleChange}
+               />
             </div>
             <div className="input-field">
               <i className="fas fa-lock"></i>
-              <input type="password" placeholder="Password" />
+              <input 
+              type="password"
+               placeholder="Password" 
+               name="StdPassword"
+               value={loginData.StdPassword}
+               onChange={handleChange}
+               />
             </div>
             <input type="submit" value="Login" className="btn solid" />
             <p className="social-text">Or Sign in with social platforms</p>
