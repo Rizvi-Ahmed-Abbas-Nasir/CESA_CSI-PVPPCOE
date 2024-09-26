@@ -54,8 +54,8 @@ export default function Header() {
             <li>
               <Link href="/" className={`${
                     pathname === "/"
-                      ? "bg-blue-500 text-[1rem] p-2 rounded"
-                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                      ? "bg-blue-500 text-[.9rem] p-2 rounded"
+                      : " text-[.9rem] hover:bg-blue-500 p-2 rounded"
                   }`}>
                   Home
               </Link>
@@ -63,8 +63,8 @@ export default function Header() {
             <li>
               <Link href="/about-us" className={`${
                     pathname === "/about-us"
-                      ? "bg-blue-500 text-[1rem] p-2 rounded"
-                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                      ? "bg-blue-500  text-[.9rem] p-2 rounded"
+                      : " text-[.9rem] hover:bg-blue-500 p-2 rounded"
                   }`}>
                   About Us
               </Link>
@@ -81,8 +81,8 @@ export default function Header() {
             <li>
               <Link href="/gallary" className={`${
                     pathname === "/gallary"
-                      ? "bg-blue-500 text-[1rem] p-2 rounded"
-                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                      ? "bg-blue-500  text-[.9rem] p-2 rounded"
+                      : " text-[.9rem] hover:bg-blue-500 p-2 rounded"
                   }`}>
                   Gallery
               </Link>
@@ -90,8 +90,8 @@ export default function Header() {
             <li>
               <Link href="/contact-us" className={`${
                     pathname === "/contact-us"
-                      ? "bg-blue-500 text-[1rem] p-2 rounded"
-                      : "text-[1rem] hover:bg-blue-500 p-2 rounded"
+                      ? "bg-blue-500  text-[.9rem] p-2 rounded"
+                      : " text-[.9rem] hover:bg-blue-500 p-2 rounded"
                   }`}>
                   Contact Us
               </Link>
@@ -99,7 +99,7 @@ export default function Header() {
           </ul>
         </div>
         <Link href="/login" className="cursor-pointer ">
-        <div className="text-n-1 contactOnHover xl:inline-flex hidden cursor-pointer rounded-md text-xs w-[7rem] border-[3px] button relative items-center justify-center h-11 transition-colors hover:text-color-1">
+        <div className="text-n-1 contactOnHover xl:inline-flex hidden cursor-pointer rounded-xl text-xs w-[7rem] border-[2px] button relative items-center justify-center h-11 transition-colors hover:text-color-1">
             <h4>
              
                 Register

@@ -2,24 +2,18 @@ import { NextResponse } from "next/server";
 import bcrypt from 'bcrypt';
 import connectMongoDB from "@/lib/db";
 import { isApiValid } from "@/lib/function";
-import RegisterModel from "@/models/register";  // Ensure this path is correct
+import RegisterModel from "@/models/register"; 
+import Student from "@/models/student";  
 
 export async function POST(req) {
     try {
-
-
-        const apiKey = req.headers.get("Authorization");
+        const apiKey = req.headers.get( "Authorization");
         if (!isApiValid(apiKey)) {
-            return NextResponse.json({ message: "Unauthorized access" }, { status: 401 });
+            return NextResponse.json( { message: "Unauthorized access" }, { status: 401 });
         }
 
         // Connect to MongoDB
-        try {
-            await connectMongoDB();
-        } catch (dbError) {
-            console.error("Database connection failed:", dbError.message);
-            return NextResponse.json({ message: "Database connection failed" }, { status: 500 });
-        }
+        await connectMongoDB();
 
         // Parse request data
         const data = await req.json();
@@ -30,47 +24,31 @@ export async function POST(req) {
             return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
         }
 
-        // Additional validation
-        if (typeof StudentEmail !== 'string' || StudentEmail.trim() === '') {
-            return NextResponse.json({ message: "Invalid email address" }, { status: 400 });
-        }
-
         // Check if email is already in use
-        try {
-            const existingUser = await RegisterModel.findOne({ StudentEmail });
-            if (existingUser) {
-                return NextResponse.json({ message: "Email already in use" }, { status: 400 });
-            }
-        } catch (findError) {
-            console.error("Error checking existing email:", findError.message);
-            return NextResponse.json({ message: "Error checking existing email" }, { status: 500 });
+        const existingUser = await RegisterModel.findOne({ StudentEmail });
+        if (existingUser) {
+            return NextResponse.json({ message: "Email already in use" }, { status: 400 });
         }
 
         // Hash the password
-        let hashedPassword;
-        try {
-            hashedPassword = await bcrypt.hash(StudentPassword, 10);
-        } catch (hashError) {
-            console.error("Password hashing failed:", hashError.message);
-            return NextResponse.json({ message: "Password hashing failed" }, { status: 500 });
-        }
+        const hashedPassword = await bcrypt.hash(StudentPassword, 10);
 
-        // Create a new student record and save it using .create()
-        try {
-            await RegisterModel.create({
-                StudentName,
-                StudentEmail,
-                StudentPassword: hashedPassword
-            });
-        } catch (saveError) {
-            console.error("Failed to save student record:", saveError.message);
-            return NextResponse.json({ message: "Failed to save student record" }, { status: 500 });
-        }
+        // Create a new user record
+        const newUser = await RegisterModel.create({
+            StudentName,
+            StudentEmail,
+            StudentPassword: hashedPassword
+        });
 
-        return NextResponse.json(
-            { message: "Student Record Added Successfully" },
-            { status: 200 }
-        );
+        // Now that the user is created, create the student record
+        const userId = newUser._id; // Get the newly created user's ID
+
+        await Student.create({
+            userId, // Assign the new user's ID
+        });
+
+        return NextResponse.json({ message: "Student Record Added Successfully" }, { status: 200 });
+
     } catch (error) {
         console.error("Server Error:", error.message);
         return NextResponse.json({ message: "Server Error", error: error.message }, { status: 500 });

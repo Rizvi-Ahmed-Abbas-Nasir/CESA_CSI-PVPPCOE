@@ -121,7 +121,7 @@ transform:translateY(0px);
   }
 }
 .Header{
-  height:11vh ;
+  height:10vh ;
   transition: 500ms;
 
 
@@ -191,7 +191,7 @@ transform:translateY(0px);
   z-index: 999;
   display: flex;
   align-items: center;
-  height: 10vh;
+  height: 9vh;
   /* background: linear-gradient(135deg, rgba(17, 13, 29, 0.1), rgba(22, 18, 37, 0.1)); */
   background-color: #161225;
   
