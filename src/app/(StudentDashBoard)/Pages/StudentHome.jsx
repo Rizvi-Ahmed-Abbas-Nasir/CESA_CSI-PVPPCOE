@@ -3,24 +3,31 @@ import abbas from "../../../Assets/IMG/abbas.jpg";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { CircularProgress,LinearProgress ,Box, Typography } from '@mui/material';
-import winner from "../../../Assets/IMG/winner.png";
 import EditBox from "@/components/EditBox"
+import axios from 'axios';
+import { useSession } from "next-auth/react";
+import OnScrollAnimation from "@/components/OnScrollAnimmation";
+import StudentProgressChart from "@/components/charts"
+import ProfileWithCharts from "@/components/CircularGraph"
+
+
 
 export default function StudentHome() {
+    const { data: session, status } = useSession();
     const [progresses, setProgresses] = useState({});
     const [events, setEvents] = useState([]);
     const [studentDatas, setStudentDatas] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [studentData, setStudentData] = useState({
-        name: "Rizvi Ahmed Abbas",
+        name: "",
         vid: "Vu1s2324006",
         class: "Comps",
         batch: "B",
         div: "C",
         sem: "5",
         image: abbas, // Default image
+        year: "2024"
     });
-
 
     const handleEditClick = () => {
         setIsDialogOpen(true);
@@ -34,20 +41,67 @@ export default function StudentHome() {
         setIsDialogOpen(false);
     };
 
-    useEffect(() => {
-        // Simulating fetching events data with demo values
-        const demoEvents = [
-            { eventId: 4, name: "Project D", progress: 50 },
-        ];
-        setEvents(demoEvents);
 
-        // Set initial demo progress values
-        const initialProgress = {};
-        demoEvents.forEach(event => {
-            initialProgress[event.eventId] = event.progress;
+const [error, setError] = useState(null);
+
+useEffect(() => {
+
+    if (typeof document !== "undefined") {
+        const hiddenElements1 = document.querySelectorAll(".hidden3");
+        const hiddenElements = document.querySelectorAll(".hidden2");
+        const hiddenElement2 = document.querySelectorAll(".hidden1");
+        const hiddenElement3 = document.querySelectorAll(".hidden4");
+  
+        OnScrollAnimation(hiddenElements1);
+        OnScrollAnimation(hiddenElements);
+        OnScrollAnimation(hiddenElement2);
+        OnScrollAnimation(hiddenElement3);
+    }
+
+     // Simulating fetching events data with demo values
+    const demoEvents = [
+        { eventId: 4, name: "Project D", progress: 50 },
+    ];
+    setEvents(demoEvents);
+
+    // Set initial demo progress values
+    const initialProgress = {};
+    demoEvents.forEach(event => {
+        initialProgress[event.eventId] = event.progress;
+    });
+    setProgresses(initialProgress);
+
+  // Only make the API call if the session is available
+  if (status === "authenticated" && session && session.user) {
+    const fetchStudentData = async () => {
+      try {
+        const userID = session.user.id;
+        const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+        
+        // Make the API call to get student data
+        const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
+          headers: {
+            Authorization: `${API_KEY}`,
+            "Content-Type": "application/json",
+          },
         });
-        setProgresses(initialProgress);
-    }, []);
+
+        // Update state with the fetched data
+        if (response.status === 200) {
+          setStudentData(response.data);
+        } else {
+          setError("No data found.");
+        }
+      } catch (error) {
+        console.error("Error fetching student details:", error);
+        setError("An error occurred while fetching student details.");
+      }
+    };
+
+    // Call the function to fetch data
+    fetchStudentData();
+  }
+}, [session, status]); 
 
     return (
         <div className="h-full flex flex-wrap gap-3 p-6 bg-opacity-10 backdrop-blur-md bg-white hover:bg-opacity-20  ">
@@ -60,7 +114,7 @@ export default function StudentHome() {
             <div className="w-full h-[50%] flex gap-3">
             <div className="w-[30%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-200 bg-slate-50 ease-in-out relative">
             <div className="w-full flex flex-col items-center justify-center py-6">
-                <Image src={studentData.image} className="w-[18rem] h-[18rem] rounded-full" alt="Rizvi Abbas" />
+                <Image src={abbas} className="w-[18rem] h-[18rem] rounded-full" alt="Rizvi Abbas" />
                 <button 
                     className="absolute top-2 right-2 bg-blue-500 text-white py-1 px-2 rounded-lg shadow-md hover:bg-blue-600"
                     onClick={handleEditClick}
@@ -105,6 +159,9 @@ export default function StudentHome() {
                             <p className="ml-2 text-[1.3rem]">{studentData.sem}</p>
                         </div>
                     </div>
+                    <div><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
+                   
+
                 </div>
             </div>
 
@@ -112,8 +169,15 @@ export default function StudentHome() {
             </div>
 
             {/* Second Row */}
-            <div className="w-full h-[100%] flex gap-3">
+            <div className="w-full h-[200%] flex gap-3">
                 <div className="w-full h-full flex flex-col gap-5">
+                <div className="w-[100%] h-full items-center justify-around flex rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white  ease-in-out p-4">
+                <div className="flex flex-col items-center justify-center rounded-xl w-[100%] h-auto">
+    <StudentProgressChart />
+</div>
+
+              
+             </div>
                 <div className="w-[100%] h-full items-center justify-around flex rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white  ease-in-out p-4">
               
               
@@ -179,6 +243,7 @@ export default function StudentHome() {
         ))}
     </div>
 </div>
+
 
  
 
@@ -395,7 +460,7 @@ export default function StudentHome() {
            
                 </div>
                 {/* Second Content Section */}
-                <div className="w-[30%] h-[90vh] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
+                <div className="w-[30%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
                     <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Projects</h3>
                     <p className="text-gray-600 mt-3">
                         Check out your ongoing projects and completed tasks.

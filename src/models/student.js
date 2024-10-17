@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const studentSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   name: { type: String, default: '' },
-  vid: { type: Number, default: null },
+  vid: { type: String, default: "" },
   class: { type: String, default: '' },
   batch: { type: String, default: '' },
   div: { type: String, default: '' },
@@ -16,6 +16,6 @@ const studentSchema = new mongoose.Schema({
 });
 
 // Check if the model is already defined to prevent OverwriteModelError
-const Student = mongoose.models.Student || mongoose.model('StudentData', studentSchema);
+const Student = mongoose.models.Student || mongoose.model('Student', studentSchema);
 
 module.exports = Student;

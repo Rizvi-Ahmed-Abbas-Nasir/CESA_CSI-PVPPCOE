@@ -1050,7 +1050,6 @@ form.sign-in-form {
   color: #444;
   margin-bottom: 10px;
 }
-
 .input-field {
   max-width: 380px;
   width: 100%;
@@ -1083,7 +1082,6 @@ form.sign-in-form {
 }
 
 .input-field input::placeholder {
-  color: #aaa;
   font-weight: 500;
 }
 
