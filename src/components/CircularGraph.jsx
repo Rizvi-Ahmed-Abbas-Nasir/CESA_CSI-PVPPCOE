@@ -14,7 +14,7 @@ const ProfileWithCharts = ({ studentData, handleEditClick }) => {
             {
                 label: 'Hackathons',
                 data: [5, 2],  // e.g., 5 completed, 2 remaining
-                backgroundColor: ['#FFD700', '#e0e0e0'],  // Gold for completed, gray for remaining
+                backgroundColor: ['#007BFF', '#e0e0e0'],  // Gold for completed, gray for remaining
                 borderWidth: 2,
             },
         ],

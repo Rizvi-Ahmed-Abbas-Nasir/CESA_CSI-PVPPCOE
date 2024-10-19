@@ -16,8 +16,8 @@ const EditBox = ({ isOpen, onClose, studentData, onSave }) => {
         sem: "5",
         hackathons: [],
         competitions: [],
-        image: "https://example.com/image.jpg",
-        year: ""
+        year: "",
+        image: null, // Image will now be null to store the file
     });
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(""); // Error state
@@ -27,34 +27,50 @@ const EditBox = ({ isOpen, onClose, studentData, onSave }) => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0]; // Get the selected image file
+        setFormData({ ...formData, image: file });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);  // Set loading to true when form is submitted
+        setLoading(true);  // Set loading to true when the form is submitted
         setError("");      // Clear any previous errors
-
+    
         if (session && session.user) {
             const userID = session.user.id; // Hide userId field
-            const data = {
-                userId: userID,
-                name: formData.name,
-                vid: formData.vid,
-                class: formData.class,
-                batch: formData.batch,
-                div: formData.div,
-                sem: formData.sem,
-                image: formData.image,
-            };
-
+    
+            const formDataToSubmit = new FormData();
+            formDataToSubmit.append('userId', userID);
+            formDataToSubmit.append('name', formData.name);
+            formDataToSubmit.append('vid', formData.vid);
+            formDataToSubmit.append('class', formData.class);
+            formDataToSubmit.append('batch', formData.batch);
+            formDataToSubmit.append('div', formData.div);
+            formDataToSubmit.append('sem', formData.sem);
+            formDataToSubmit.append('hackathons', formData.hackathons[0]);
+            formDataToSubmit.append('competitions', formData.competitions[0]);
+            formDataToSubmit.append('year', formData.year);
+    
+            // Only append image if a new one has been selected
+            if (formData.image) {
+                formDataToSubmit.append('image', formData.image);
+            }
+    
+            // Append the current timestamp to avoid stale requests
+            const currentTime = new Date().toISOString(); // ISO 8601 format
+            formDataToSubmit.append('X-Request-Time', currentTime);
+    
             const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-
+    
             try {
-                const response = await axios.put("http://localhost:3000/api/student", data, {
+                const response = await axios.put("http://localhost:3000/api/student", formDataToSubmit, {
                     headers: {
                         Authorization: `${API_KEY}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'multipart/form-data' // Ensure we are sending form data
                     }
                 });
-
+    
                 if (response.status === 200) {
                     onSave(formData);
                     onClose();
@@ -72,6 +88,8 @@ const EditBox = ({ isOpen, onClose, studentData, onSave }) => {
             setLoading(false);
         }
     };
+    
+    
 
     return (
         <AnimatePresence>
@@ -95,7 +113,7 @@ const EditBox = ({ isOpen, onClose, studentData, onSave }) => {
                         <form onSubmit={handleSubmit} className="w-full ">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                                 {Object.entries(formData).map(([key, value]) => (
-                                    key !== 'userId' && key !== '_id' && (  // Hide userId and _id fields
+                                    key !== 'userId' && key !== '_id' && key !== 'image' && (  // Hide userId and _id fields
                                         <div key={key} className="flex flex-col">
                                             <label className="text-gray-700 font-medium mb-2 capitalize">{key}:</label>
                                             <input
@@ -108,6 +126,18 @@ const EditBox = ({ isOpen, onClose, studentData, onSave }) => {
                                         </div>
                                     )
                                 ))}
+
+                                {/* Add image input field */}
+                                <div className="flex flex-col">
+                                    <label className="text-gray-700 font-medium mb-2">Profile Image:</label>
+                                    <input
+                                        type="file"
+                                        name="image"
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                        className="border border-gray-300 rounded-lg p-3 text-gray-800 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow duration-300 shadow-sm"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex justify-between w-full mt-8 space-x-4">

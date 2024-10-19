@@ -19,89 +19,60 @@ export default function StudentHome() {
     const [studentDatas, setStudentDatas] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [studentData, setStudentData] = useState({
-        name: "",
-        vid: "Vu1s2324006",
-        class: "Comps",
-        batch: "B",
-        div: "C",
-        sem: "5",
+        name: "Your Name",
+        vid: "Your VID",
+        class: "Your Class",
+        batch: "Your Batch",
+        div: "Your Division",
+        sem: "Your Sem",
         image: abbas, // Default image
-        year: "2024"
+        year: "Current Year"
     });
 
-    const handleEditClick = () => {
-        setIsDialogOpen(true);
-    };
-    const handleDialogClose = () => {
-        setIsDialogOpen(false);
-    };
-    const handleSave = (updatedData) => {
-        // Handle saving the updated data
-        // For example, you might want to send it to a server or update local state
-        setIsDialogOpen(false);
-    };
+   
 
 
 const [error, setError] = useState(null);
 
-useEffect(() => {
-
-    if (typeof document !== "undefined") {
-        const hiddenElements1 = document.querySelectorAll(".hidden3");
-        const hiddenElements = document.querySelectorAll(".hidden2");
-        const hiddenElement2 = document.querySelectorAll(".hidden1");
-        const hiddenElement3 = document.querySelectorAll(".hidden4");
-  
-        OnScrollAnimation(hiddenElements1);
-        OnScrollAnimation(hiddenElements);
-        OnScrollAnimation(hiddenElement2);
-        OnScrollAnimation(hiddenElement3);
-    }
-
-     // Simulating fetching events data with demo values
-    const demoEvents = [
-        { eventId: 4, name: "Project D", progress: 50 },
-    ];
-    setEvents(demoEvents);
-
-    // Set initial demo progress values
-    const initialProgress = {};
-    demoEvents.forEach(event => {
-        initialProgress[event.eventId] = event.progress;
-    });
-    setProgresses(initialProgress);
-
-  // Only make the API call if the session is available
-  if (status === "authenticated" && session && session.user) {
-    const fetchStudentData = async () => {
-      try {
+const fetchStudentData = async () => {
+    if (status === "authenticated" && session && session.user) {
         const userID = session.user.id;
         const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-        
-        // Make the API call to get student data
-        const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
-          headers: {
-            Authorization: `${API_KEY}`,
-            "Content-Type": "application/json",
-          },
-        });
 
-        // Update state with the fetched data
-        if (response.status === 200) {
-          setStudentData(response.data);
-        } else {
-          setError("No data found.");
+        try {
+            const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
+                headers: {
+                    Authorization: `${API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (response.status === 200) {
+                setStudentData(response.data);
+            } else {
+                setError("No data found.");
+            }
+        } catch (error) {
+            console.error("Error fetching student details:", error);
+            setError("An error occurred while fetching student details.");
         }
-      } catch (error) {
-        console.error("Error fetching student details:", error);
-        setError("An error occurred while fetching student details.");
-      }
-    };
+    }
+};
+const handleEditClick = () => {
+    setIsDialogOpen(true);
+};
 
-    // Call the function to fetch data
-    fetchStudentData();
-  }
-}, [session, status]); 
+const handleSave = () => {
+    fetchStudentData(); // Fetch data after saving
+};
+
+useEffect(() => {
+    fetchStudentData(); // Initial fetch on mount
+}, [session, status]);
+
+const handleDialogClose = () => {
+    setIsDialogOpen(false);
+};
 
     return (
         <div className="h-full flex flex-wrap gap-3 p-6 bg-opacity-10 backdrop-blur-md bg-white hover:bg-opacity-20  ">
@@ -114,14 +85,21 @@ useEffect(() => {
             <div className="w-full h-[50%] flex gap-3">
             <div className="w-[30%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-200 bg-slate-50 ease-in-out relative">
             <div className="w-full flex flex-col items-center justify-center py-6">
-                <Image src={abbas} className="w-[18rem] h-[18rem] rounded-full" alt="Rizvi Abbas" />
-                <button 
-                    className="absolute top-2 right-2 bg-blue-500 text-white py-1 px-2 rounded-lg shadow-md hover:bg-blue-600"
-                    onClick={handleEditClick}
-                >
-                    Edit
-                </button>
+                    <Image 
+                        src={studentData.image} 
+                        width={288} // Corresponds to 18rem (1 rem = 16px)
+                        height={288} // Corresponds to 18rem
+                        className="w-[18rem] h-[18rem] rounded-full" 
+                        alt="Rizvi Abbas" 
+                    />
+                    <button 
+                        className="absolute top-2 right-2 bg-blue-500 text-white py-1 px-2 rounded-lg shadow-md hover:bg-blue-600"
+                        onClick={handleEditClick}
+                    >
+                        Edit
+                </button> 
             </div>
+
             </div>
 
             <div className="w-[70%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white p-4 relative">
@@ -460,11 +438,19 @@ useEffect(() => {
            
                 </div>
                 {/* Second Content Section */}
-                <div className="w-[30%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
+                <div className="w-[30%] h-[100%] flex flex-col gap-3">
+                <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
                     <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Projects</h3>
                     <p className="text-gray-600 mt-3">
                         Check out your ongoing projects and completed tasks.
                     </p>
+                </div>
+                <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
+                    <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Projects</h3>
+                    <p className="text-gray-600 mt-3">
+                        Check out your ongoing projects and completed tasks.
+                    </p>
+                </div>
                 </div>
             </div>
         </div>

@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { AiFillHome, AiFillAppstore, AiOutlineShoppingCart, AiOutlineLock, AiOutlineFileText, AiOutlineSetting, AiOutlineUser } from "react-icons/ai"; // Importing icons
 import abbas from "../../../Assets/IMG/abbas.jpg";
+import Link from 'next/link';
+
 
 export default function NavBar() {
   return (
@@ -17,13 +19,33 @@ export default function NavBar() {
           <ul className="flex flex-col text-white gap-4 w-full">
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
               <AiFillHome className="text-xl" />
-              <span>Pages</span>
+              <Link
+                  href="/StudentDashBoard"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'bg-blue-500 text-[1.2rem] p-2 rounded'
+                      : 'text-[1.2rem] hover:bg-blue-500 p-2 rounded'
+                  }
+                  end
+                >
+                  Home
+                </Link>
             </li>
 
             {/* Applications */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
               <AiFillAppstore className="text-xl" />
-              <span>Applications</span>
+              <Link
+                  href="/Activities"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'bg-blue-500 text-[1.2rem] p-2 rounded'
+                      : 'text-[1.2rem] hover:bg-blue-500 p-2 rounded'
+                  }
+                  end
+                >
+                  Add Activity
+                </Link>
             </li>
 
             {/* Ecommerce */}
