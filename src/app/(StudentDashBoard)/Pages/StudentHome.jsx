@@ -67,6 +67,31 @@ const handleSave = () => {
 };
 
 useEffect(() => {
+       // Animate elements on scroll
+       if (typeof document !== "undefined") {
+        const hiddenElements1 = document.querySelectorAll(".hidden3");
+        const hiddenElements2 = document.querySelectorAll(".hidden2");
+        const hiddenElements3 = document.querySelectorAll(".hidden1");
+        const hiddenElements4 = document.querySelectorAll(".hidden4");
+
+        OnScrollAnimation(hiddenElements1);
+        OnScrollAnimation(hiddenElements2);
+        OnScrollAnimation(hiddenElements3);
+        OnScrollAnimation(hiddenElements4);
+    }
+
+    // Simulating fetching events data with demo values
+    const demoEvents = [
+        { eventId: 4, name: "Project D", progress: 50 },
+    ];
+    setEvents(demoEvents);
+
+    // Set initial demo progress values
+    const initialProgress = {};
+    demoEvents.forEach(event => {
+        initialProgress[event.eventId] = event.progress;
+    });
+    setProgresses(initialProgress);
     fetchStudentData(); // Initial fetch on mount
 }, [session, status]);
 

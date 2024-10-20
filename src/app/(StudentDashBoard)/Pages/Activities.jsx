@@ -1,28 +1,32 @@
+import axios from "axios";
 import React, { useState } from "react";
-// import nodeApi from "../../axiosConfig";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useSession } from "next-auth/react";
 
 
 function CreateEvent() {
+  const { data: session } = useSession();
+
   const [formData, setFormData] = useState({
     eventName: "",
     eventDescription: "",
-    nameOfSpeaker: "",
-    organizationOfSpeaker: "",
-    locationOfSpeaker: "",
+    collegename: "",
+    organization: "",
+    location: "",
     eventNotice: "",
     date: "",
-    eventDeadline: "",
+    eventDate: "",
     category: "",
     time: "",
     department: [],
     eligible_degree_year: [],
-    isPaid: false,
-    isOnline: false,
-    eventLink : null,
-    cost: null,
-    banner: null,
-    paymentQR: null,
+    ismoney: false,
+    money : "",
+    image: null,
+    certificate: null,
+    eventStatus : "",
+
+  
   });
 
   const [editEventId, setEditEventId] = useState(null);
@@ -33,26 +37,25 @@ function CreateEvent() {
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     
-    // Handle file inputs for different fields like banner, paymentQR, etc.
+    // Handle file inputs
     if (type === "file") {
-      // Check which file input is being handled based on the `name` attribute
-      if (name === "banner") {
+      // Store the uploaded file in the correct field
+      if (name === "image") {
         setFormData({
           ...formData,
-          banner: files[0],  // Store banner image
+          image: files[0], // Store image file
         });
-      } else if (name === "paymentQR") {
+      } else if (name === "certificate") {
         setFormData({
           ...formData,
-          paymentQR: files[0],  // Store payment QR image
+          certificate: files[0], // Store certificate file
         });
       }
     } else if (name === "eligible_degree_year") {
       // Handle eligible years as a checkbox
       const updatedYears = checked
         ? [...formData.eligible_degree_year, value]
-        : formData?.eligible_degree_year?.filter((year) => year !== value);
-      // console.log(updatedYears);
+        : formData.eligible_degree_year.filter((year) => year !== value);
       setFormData({ ...formData, eligible_degree_year: updatedYears });
     } else if (name === "department") {
       // Handle department as a checkbox
@@ -69,89 +72,126 @@ function CreateEvent() {
     }
   };
   
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+  
+    const validCategories = ['Hackathon', 'Project Competition', 'Coding Competition']; // List of valid categories
+  
     if (
       !formData.eventName ||
-      !formData.nameOfSpeaker ||
+      !formData.collegename ||
       !formData.date ||
-      !formData.eventDeadline
+      !formData.eventDate ||
+      !formData.eventStatus
     ) {
       setError("Please fill all required fields.");
+      setIsLoading(false);
       return;
     }
-
-    try {
-      const formattedDate = formatDate(formData.date);
-      const formattedDeadlineDate = formatDate(formData.eventDeadline);
-      const data = new FormData();
-      data.append("eventName", formData.eventName);
-      data.append("eventDescription", formData.eventDescription); // New field
-      data.append("nameOfSpeaker", formData.nameOfSpeaker);
-      data.append("organizationOfSpeaker", formData.organizationOfSpeaker); // New field
-      data.append("locationOfSpeaker", formData.locationOfSpeaker); // New field
-      data.append("eventNotice", formData.eventNotice); // New field
-      data.append("date", formattedDate);
-      data.append("eventDeadline", formattedDeadlineDate);
-      data.append("category", formData.category);
-      data.append("time", formData.time);
-      data.append("department", formData.department);
-      data.append("eligible_degree_year", formData.eligible_degree_year);
-      data.append("isPaid", formData.isPaid);
-      data.append("isOnline", formData.isOnline);
-      data.append("eventLink", formData.isOnline ? formData.eventLink : null);
-      data.append("cost", formData.isPaid ? parseInt(formData.cost, 10) : null);
-      if (formData.banner) {
-        data.append("banner", formData.banner);
-      }
-      if (formData.paymentQR) {
-        data.append("paymentQR", formData.paymentQR);
-      }      
-      if (editEventId) {
-        const response = await nodeApi.put(
-          `/event/${editEventId}`,
-          data
-        );
-        setEditEventId(null);
-        alert(response.data.message);
-      } else {
-        const response = await nodeApi.post(`/event`, data);
-        alert(response.data.message);
-      }
-
-      setFormData({
-        eventName: "",
-        eventDescription: "", // Reset new field
-        nameOfSpeaker: "",
-        organizationOfSpeaker: "", // Reset new field
-        locationOfSpeaker: "", // Reset new field
-        eventNotice: "",
-        date: "",
-        eventDeadline: "",
-        category: "",
-        time: "",
-        department: [],
-        eligible_degree_year: [],
-        isPaid: false,
-        isOnline: false,
-        eventLink: null,
-        cost: null,
-        banner: null,
-        paymentQR: null,
-      });
-      setError("");
+  
+    // Check if the category is valid
+    if (!validCategories.includes(formData.category)) {
+      setError("Invalid category. Please select a valid event category.");
       setIsLoading(false);
-    } catch (error) {
-      setError(error.message);
-      setIsLoading(false);
+      return;
+    }
+  
+    if (session && session.user) {
+      try {
+        const userID = session.user.id;
+        const formattedDate = formatDate(formData.date);
+        const formattedEventDate = formatDate(formData.eventDate);
+        const data = new FormData();
+        
+        // Append form data
+        data.append("userId", userID);
+        data.append("eventName", formData.eventName);
+        data.append("eventDescription", formData.eventDescription);
+        data.append("collegename", formData.collegename);
+        data.append("organization", formData.organization);
+        data.append("location", formData.location);
+        data.append("eventNotice", formData.eventNotice);
+        data.append("date", formattedDate);
+        data.append("eventDate", formattedEventDate);
+        data.append("category", formData.category);
+        data.append("time", formData.time);
+        data.append("department", formData.department);
+        data.append("eligible_degree_year", formData.eligible_degree_year);
+        data.append("ismoney", formData.ismoney);
+        data.append("money", formData.money);
+        data.append("eventStatus", formData.eventStatus);
+      
+        if (formData.image) {
+          data.append("image", formData.image);
+        }
+        if (formData.certificate) {
+          data.append("certificate", formData.certificate);
+        }
+      
+        // Determine if editing or creating an event
+        let response;
+        if (editEventId) {
+          response = await axios.put(`/event/${editEventId}`, data);
+          setEditEventId(null);
+        } else {
+          const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+      
+          // Make the API request
+          response = await axios.post(`http://localhost:3000/api/studentevent`, data, {
+            headers: {
+              Authorization: `${API_KEY}`,
+              'Content-Type': 'multipart/form-data' // Ensure we are sending form data
+            }
+          });
+        }
+      
+        // Log the full response to see what it contains
+        console.log(response);
+      
+        // Check if the response contains a message
+        const message = response.data.message || "Event created successfully.";
+        alert(message);
+      
+        // Reset form data
+        setFormData({
+          eventName: "",
+          eventDescription: "",
+          collegename: "",
+          organization: "",
+          location: "",
+          eventNotice: "",
+          date: "",
+          eventDate: "",
+          category: "",
+          time: "",
+          department: [],
+          eligible_degree_year: [],
+          ismoney: false,
+          money: "",
+          image: null,
+          certificate: null,
+          eventStatus: "",
+        });
+      
+        setError("");
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error:", error); // Log the error for debugging
+        setError(error.response?.data?.message || "Error creating event. Please try again.");
+        setIsLoading(false);
+      }
+      
     }
   };
-
+  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
   };
+  
+
 
   return (
     <div className="w-full lg:w-[100%] p-8 border border-gray-300 shadow-md rounded-lg text-black">
@@ -178,11 +218,11 @@ function CreateEvent() {
 
     {/* Speaker Name */}
     <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Speaker Name:</label>
+      <label className="font-semibold mb-1 w-1/4">College Name:</label>
       <input
         type="text"
-        name="nameOfSpeaker"
-        value={formData.nameOfSpeaker}
+        name="collegename"
+        value={formData.collegename}
         onChange={handleChange}
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
         required
@@ -204,11 +244,11 @@ function CreateEvent() {
     
     {/* Event Deadline */}
     <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Event Deadline:</label>
+      <label className="font-semibold mb-1 w-1/4">Event Date:</label>
       <input
         type="datetime-local"
-        name="eventDeadline"
-        value={formData.eventDeadline}
+        name="eventDate"
+        value={formData.eventDate}
         onChange={handleChange}
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
         required
@@ -237,9 +277,10 @@ function CreateEvent() {
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
       >
         <option value="">Select Category</option>
-        <option value="Placement">Placement</option>
-        <option value="Higher Studies">Higher Studies</option>
-        <option value="Entrepreneurship">Entrepreneurship</option>
+        <option value="Hackathon">Hackathon</option>
+        <option value="Project Competition">Project Competition</option>
+        <option value="Coding Competition">Coding Competition</option>
+          <option value="Other">Other</option>
       </select>
     </div>
 
@@ -296,11 +337,11 @@ function CreateEvent() {
 
     {/* Speaker Organization */}
     <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Speaker Organization:</label>
+      <label className="font-semibold mb-1 w-1/4"> Organization:</label>
       <input
         type="text"
-        name="organizationOfSpeaker"
-        value={formData.organizationOfSpeaker}
+        name="organization"
+        value={formData.organization}
         onChange={handleChange}
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
       />
@@ -308,11 +349,11 @@ function CreateEvent() {
 
     {/* Speaker Location */}
     <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Speaker Location:</label>
+      <label className="font-semibold mb-1 w-1/4"> Location:</label>
       <input
         type="text"
-        name="locationOfSpeaker"
-        value={formData.locationOfSpeaker}
+        name="location"
+        value={formData.location}
         onChange={handleChange}
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
       />
@@ -331,10 +372,20 @@ function CreateEvent() {
 
     {/* Banner */}
     <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Banner:</label>
+      <label className="font-semibold mb-1 w-1/4">Image:</label>
       <input
         type="file"
-        name="banner"
+        name="image"
+        onChange={handleChange}
+        className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
+      />
+    </div>
+     {/* Banner */}
+    <div className="flex items-center w-full">
+      <label className="font-semibold mb-1 w-1/4">Certificate Image:</label>
+      <input
+        type="file"
+        name="certificate"
         onChange={handleChange}
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
       />
@@ -342,91 +393,49 @@ function CreateEvent() {
 
     {/* Is the event Online? */}
     <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Is the event Online?</label>
-      <div className="flex border border-gray-300 p-4 rounded-lg w-3/4">
-        <label className="flex items-center mr-6">
-          <input
-            type="radio"
-            name="isOnline"
-            value={true}
-            checked={formData.isOnline === true}
-            onChange={handleChange}
-            className="mr-2 custom-radio-input"
-            style={{ width: "24px", height: "24px" }} // Apply size
-          />
-          Online
-        </label>
-        <label className="flex items-center">
-          <input
-            type="radio"
-            name="isOnline"
-            value={false}
-            checked={formData.isOnline === false}
-            onChange={handleChange}
-            className="mr-2 custom-radio-input"
-            style={{ width: "24px", height: "24px" }} // Apply size
-          />
-          Offline
-        </label>
-      </div>
-    </div>
+          <label className="font-semibold mb-1 w-1/4">Is Event Have Prize Money?</label>
+          <div className="flex border border-gray-300 p-4 rounded-lg w-3/4">
+            <label className="flex items-center mr-6">
+              <input
+                type="radio"
+                name="ismoney"
+                value={true}
+                checked={formData.ismoney === true}
+                onChange={handleChange}
+                className="mr-2 custom-radio-input"
+                style={{ width: "24px", height: "24px" }}
+              />
+              YES
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="ismoney"
+                value={false}
+                checked={formData.ismoney === false}
+                onChange={handleChange}
+                className="mr-2 custom-radio-input"
+                style={{ width: "24px", height: "24px" }}
+              />
+              NO
+            </label>
+          </div>
+        </div>
 
-    {formData.isOnline && (
+    {formData.money && (
       <div className="flex items-center w-full">
-        <label className="font-semibold mb-1 w-1/4">Event Link:</label>
+        <label className="font-semibold mb-1 w-1/4">Prize Money:</label>
         <input
           type="text"
           name="eventLink"
-          value={formData.eventLink}
+          value={formData.money}
           onChange={handleChange}
           className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
         />
       </div>
     )}
 
-    {/* Is the event Paid? */}
-    <div className="flex items-center w-full">
-      <label className="font-semibold mb-1 w-1/4">Is the event Paid?</label>
-      <div className="flex border border-gray-300 p-4 rounded-lg w-3/4">
-        <label className="flex items-center mr-6">
-          <input
-            type="radio"
-            name="isPaid"
-            value={true}
-            checked={formData.isPaid === true}
-            onChange={handleChange}
-            className="mr-2 custom-radio-input"
-            style={{ width: "24px", height: "24px" }} // Apply size
-          />
-          Paid
-        </label>
-        <label className="flex items-center">
-          <input
-            type="radio"
-            name="isPaid"
-            value={false}
-            checked={formData.isPaid === false}
-            onChange={handleChange}
-            className="mr-2 custom-radio-input"
-            style={{ width: "24px", height: "24px" }} // Apply size
-          />
-          Free
-        </label>
-      </div>
-    </div>
-
-    {formData.isPaid && (
-      <div className="flex items-center w-full">
-        <label className="font-semibold mb-1 w-1/4">Payment Amount:</label>
-        <input
-          type="text"
-          name="paymentAmount"
-          value={formData.paymentAmount}
-          onChange={handleChange}
-          className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
-        />
-      </div>
-    )}
+  
 
     {/* Event Status */}
     <div className="flex items-center w-full">
@@ -438,18 +447,29 @@ function CreateEvent() {
         className="w-3/4 p-2 rounded-lg bg-gray-100 text-black border border-gray-300 focus:border-blue-400"
       >
         <option value="">Select Status</option>
-        <option value="Upcoming">Upcoming</option>
-        <option value="Ongoing">Ongoing</option>
-        <option value="Completed">Completed</option>
+        <option value="Upcoming">Winner</option>
+        <option value="Ongoing">1nd Runner Up </option>
+        <option value="Completed">2nd Runner Up</option>
+                <option value="Completed">Participate</option>
+
       </select>
     </div>
 
     {/* Submit Button */}
-    <div className="text-center mt-6">
-      <button type="submit" className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 w-full">
-        Create Event
-      </button>
-    </div>
+    <div className="flex w-full justify-center">
+          <button
+            type="submit"
+            className="w-full lg:w-1/3 mt-5 p-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none"
+          >
+            {isLoading ? (
+              <ClipLoader color="white" size={20} />
+            ) : isLoading ? (
+              "Creating Event"
+            ) : (
+              "Create Event"
+            )}
+          </button>
+        </div>
   </form>
 </div>
 

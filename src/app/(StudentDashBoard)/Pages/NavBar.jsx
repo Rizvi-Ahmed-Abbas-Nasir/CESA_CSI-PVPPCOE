@@ -1,9 +1,8 @@
 "use client";
 import Image from "next/image";
-import { AiFillHome, AiFillAppstore, AiOutlineShoppingCart, AiOutlineLock, AiOutlineFileText, AiOutlineSetting, AiOutlineUser } from "react-icons/ai"; // Importing icons
+import { MdHome, MdAddCircleOutline, MdVisibility, MdChat, MdLock, MdDescription, MdSettings, MdPerson } from "react-icons/md"; // Updated icons
 import abbas from "../../../Assets/IMG/abbas.jpg";
 import Link from 'next/link';
-
 
 export default function NavBar() {
   return (
@@ -18,7 +17,7 @@ export default function NavBar() {
         <div className="w-full flex flex-col items-start justify-center py-8">
           <ul className="flex flex-col text-white gap-4 w-full">
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiFillHome className="text-xl" />
+              <MdHome className="text-xl" />
               <Link
                   href="/StudentDashBoard"
                   className={({ isActive }) =>
@@ -32,9 +31,9 @@ export default function NavBar() {
                 </Link>
             </li>
 
-            {/* Applications */}
+            {/* Add Activity */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiFillAppstore className="text-xl" />
+              <MdAddCircleOutline className="text-xl" /> {/* New icon */}
               <Link
                   href="/Activities"
                   className={({ isActive }) =>
@@ -48,33 +47,43 @@ export default function NavBar() {
                 </Link>
             </li>
 
-            {/* Ecommerce */}
+            {/* View Activities */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiOutlineShoppingCart className="text-xl" />
-              <span>Ecommerce</span>
+              <MdVisibility className="text-xl" /> {/* New icon */}
+              <Link
+                  href="/ViewEvent"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'bg-blue-500 text-[1.2rem] p-2 rounded'
+                      : 'text-[1.2rem] hover:bg-blue-500 p-2 rounded'
+                  }
+                  end
+                >
+                  View Activities
+                </Link>
             </li>
 
-            {/* Authentication */}
+            {/* Chats */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiOutlineLock className="text-xl" />
-              <span>Authentication</span>
+              <MdChat className="text-xl" /> {/* New icon */}
+              <span>Chats</span>
             </li>
 
             {/* Docs */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiOutlineFileText className="text-xl" />
+              <MdDescription className="text-xl" />
               <span>Docs</span>
             </li>
 
             {/* Settings */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiOutlineSetting className="text-xl" />
+              <MdSettings className="text-xl" />
               <span>Settings</span>
             </li>
 
             {/* Logout */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
-              <AiOutlineUser className="text-xl" />
+              <MdPerson className="text-xl" />
               <span>Logout</span>
             </li>
           </ul>
