@@ -11,7 +11,7 @@ export default function Home() {
         <NavBar />
       </div>
       
-      <div className=" w-[85%] h-[97vh] flex flex-col ">
+      <div className="w-[85%] h-[97vh] flex flex-col pr-8 ">
         <div className="h-[8vh]">
           <HeaderDash />
         </div>

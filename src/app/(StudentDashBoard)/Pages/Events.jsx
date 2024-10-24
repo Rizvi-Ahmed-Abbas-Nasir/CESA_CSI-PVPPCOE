@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
+import { FaThumbsUp, FaEye, FaCommentDots } from "react-icons/fa";
+
 
 // import CustomAlert from "../components/customAlert";
 
@@ -27,6 +29,7 @@ const EventCompo = () => {
         const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
     
         try {
+          setLoading(true);
           const response = await axios.get(`http://localhost:3000/api/studentevent?userId=${userID}`, {
             headers: {
               'Authorization': API_KEY, // Pass API key in Authorization header
@@ -110,7 +113,9 @@ const EventCompo = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return    <div className="flex justify-center items-center  h-full">
+    <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
+</div>;
   }
 
   if (error) {
@@ -118,6 +123,7 @@ const EventCompo = () => {
   }
 
   return (
+
     <>
       {showAlert && (
         <CustomAlert
@@ -125,111 +131,119 @@ const EventCompo = () => {
           onClose={() => setShowAlert(false)} // Close the alert
         />
       )}
-
+    
       {data.length > 0 ? (
-        <div className="flex w-full flex-wrap gap-4 items-center justify-center md:py-12  flex-col md:pl-10 ">
+        <div className="flex flex-wrap gap-8 items-start justify-center py-10 w-full">
           {data.map(
             (event, index) =>
               !event.isDeleted && (
                 <div
-                key={index}
-                className="bg-white border rounded-lg shadow-md p-4 w-full sm:w-1/2 lg:w-[80%] xl:w-[90%] md:min-h-[600px] md:max-h-[600px] overflow-y-hidden flex flex-col justify-start"
-              >
-                <div className="flex justify-between items-center p-2 bg-blue-600 rounded-lg">
-                  <div>
-                    <h3 className="text-white text-2xl font-semibold">
-                      <strong>Event:</strong> {event.eventName}
+                  key={index}
+                  className="bg-white border-2 border-blue-400 rounded-xl p-8 w-full md:w-[48%] lg:w-[45%] xl:w-[38%] flex flex-col justify-between "
+                >
+                  {/* Header with Event Name and Toggle Button */}
+                  <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg px-6 py-4 mb-6 ">
+                    <h3 className="text-white text-3xl font-bold font-sans tracking-wide">
+                      {event.eventName}
                     </h3>
-                  </div>
-                  <div>
                     <button
-                      className="ml-2 text-white hover:underline py-1 px-2 bg-blue-500 rounded-lg"
+                      className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-4 rounded-lg transition-colors duration-300"
                       onClick={() => handleTogglePay(index)}
                     >
                       {openPayBoxes[index] ? "Hide Details" : "Show Details"}
                     </button>
                   </div>
-                </div>
-              
-                <div className="mt-4">
-                  {/* Event Image and Certificate Section */}
-                  <div className="flex flex-col md:flex-row w-full gap-4">
+    
+                  {/* Main Content Section */}
+                  <div className="mt-4 flex flex-col md:flex-row gap-8">
                     {/* Event Image Section */}
-                    <div className="flex flex-col w-full md:w-1/2">
-                      <h4 className="text-lg font-semibold">Photo:</h4>
+                    <div className="w-full md:w-1/2">
+                      <h4 className="text-2xl font-semibold text-gray-800 mb-4">Event Photo:</h4>
                       {event.image && (
                         <img
                           src={event.image}
                           alt="Event"
-                          className="w-full h-48 object-cover rounded-md"
+                          className="w-full h-48 object-cover rounded-xl shadow-lg"
                         />
                       )}
                     </div>
-              
+    
                     {/* Certificate Image Section */}
                     {event.certificate && (
-                      <div className="flex flex-col w-full md:w-1/2">
-                        <h4 className="text-lg font-semibold">Certificate:</h4>
+                      <div className="w-full md:w-1/2">
+                        <h4 className="text-2xl font-semibold text-gray-800 mb-4">Certificate:</h4>
                         <img
                           src={event.certificate}
                           alt="Certificate"
-                          className="w-full h-48 object-cover rounded-md"
+                          className="w-full h-48 object-cover rounded-xl shadow-lg"
                         />
                       </div>
                     )}
                   </div>
-              
+    
                   {/* Event Information */}
-                  <div className="mt-4">
-                    <p className="text-lg">
+                  <div className="mt-6 space-y-4 text-gray-800">
+                    <p className="text-2xl font-semibold border-b-2 border-blue-400 pb-2">
                       <strong>College Name:</strong> {event.collegename}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Description:</strong> {event.eventDescription}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Organization:</strong> {event.organization}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Location:</strong> {event.location}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Date:</strong> {event.date.split("T")[0]}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Deadline:</strong> {event.eventDate.split("T")[0]}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Time:</strong> {event.time}
                     </p>
-                    <p className="text-lg">
+                    <p className="text-lg bg-gray-100 p-3 rounded-lg">
                       <strong>Prize:</strong> {event.ismoney ? "YES" : "NO"}
                     </p>
-              
+    
                     {openPayBoxes[index] && (
                       <>
-                        <p className="text-lg">
+                        <p className="text-lg bg-gray-100 p-3 rounded-lg">
                           <strong>Department:</strong> {event.department.join(", ")}
                         </p>
-                        <p className="text-lg">
+                        <p className="text-lg bg-gray-100 p-3 rounded-lg">
                           <strong>Eligible Year:</strong> {event.eligible_degree_year.join(", ")}
                         </p>
                         <a
-                          className="text-blue-700 font-bold underline"
-                          href={`http://localhost:8000/${event.eventNotice}`} // Update to the correct field for the notice
+                          className="text-blue-600 font-bold underline hover:text-blue-800 transition-colors duration-300"
+                          href={`http://localhost:8000/${event.eventNotice}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Notice
+                          Event Notice
                         </a>
                       </>
                     )}
                   </div>
+    
+                  {/* Footer with Likes, Views, Comments */}
+                  <div className="flex justify-around items-center mt-6 border-t pt-4 text-gray-600">
+                    <div className="text-center">
+                      <FaThumbsUp className="text-3xl text-blue-600 hover:text-blue-800 transition-colors duration-300" />
+                      <p className="text-lg font-semibold">Likes</p>
+                    </div>
+                    <div className="text-center">
+                      <FaEye className="text-3xl text-green-600 hover:text-green-800 transition-colors duration-300" />
+                      <p className="text-lg font-semibold">Views</p>
+                    </div>
+                    <div className="text-center">
+                      <FaCommentDots className="text-3xl text-purple-600 hover:text-purple-800 transition-colors duration-300" />
+                      <p className="text-lg font-semibold">Comments</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              
-              
-              
               )
           )}
         </div>
@@ -237,6 +251,8 @@ const EventCompo = () => {
         <div>No events available for your criteria.</div>
       )}
     </>
+    
+  
   );
 };
 

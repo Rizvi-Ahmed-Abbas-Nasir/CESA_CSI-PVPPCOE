@@ -1,7 +1,7 @@
 "use client";
 
 import NavBar from "@/app/(StudentDashBoard)/Pages/NavBar";
-import Activities from "../Pages/Activities";
+import Chats from "../Pages/chats";
 import HeaderDash from "@/app/(StudentDashBoard)/Pages/HeaderDash";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
         </div>
         
         <div className="h-[100vh] w-full  overflow-auto pt-4">
-          <Activities />
+          <Chats />
         </div>
       </div>
     </div>

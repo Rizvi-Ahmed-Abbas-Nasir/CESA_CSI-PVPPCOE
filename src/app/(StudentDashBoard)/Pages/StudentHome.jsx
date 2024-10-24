@@ -1,5 +1,5 @@
 "use client";
-import abbas from "../../../Assets/IMG/abbas.jpg";
+import abbas from "../../../Assets/IMG/person.png";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { CircularProgress,LinearProgress ,Box, Typography } from '@mui/material';
@@ -18,6 +18,10 @@ export default function StudentHome() {
     const [events, setEvents] = useState([]);
     const [studentDatas, setStudentDatas] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [loadingImage, setLoadingImage] = useState(true); // Track loading state for image
+
     const [studentData, setStudentData] = useState({
         name: "Your Name",
         vid: "Your VID",
@@ -40,6 +44,7 @@ const fetchStudentData = async () => {
         const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
         try {
+            setLoading(true); 
             const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
                 headers: {
                     Authorization: `${API_KEY}`,
@@ -55,6 +60,8 @@ const fetchStudentData = async () => {
         } catch (error) {
             console.error("Error fetching student details:", error);
             setError("An error occurred while fetching student details.");
+        } finally {
+            setLoading(false); 
         }
     }
 };
@@ -65,6 +72,30 @@ const handleEditClick = () => {
 const handleSave = () => {
     fetchStudentData(); // Fetch data after saving
 };
+
+
+const fetchData = async () => {
+    if (status === "authenticated" && session && session.user) {
+      const userID = session.user.id;
+      const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+      try {
+        setLoading(true); // Set loading to true before fetching
+        const response = await axios.get(`http://localhost:3000/api/studentevent?userId=${userID}`, {
+          headers: {
+            'Authorization': API_KEY, // Pass API key in Authorization header
+          },
+        });
+
+        setData(response.data); // assuming response.data contains the data
+        console.log(response.data); // For debugging purposes
+      } catch (err) {
+        setError(err.message); // Set error state if the API call fails
+      } finally {
+        setLoading(false); // Set loading to false once the request is complete
+      }
+    }
+  };
 
 useEffect(() => {
        // Animate elements on scroll
@@ -93,6 +124,10 @@ useEffect(() => {
     });
     setProgresses(initialProgress);
     fetchStudentData(); // Initial fetch on mount
+
+  
+      fetchData();
+
 }, [session, status]);
 
 const handleDialogClose = () => {
@@ -110,12 +145,19 @@ const handleDialogClose = () => {
             <div className="w-full h-[50%] flex gap-3">
             <div className="w-[30%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-200 bg-slate-50 ease-in-out relative">
             <div className="w-full flex flex-col items-center justify-center py-6">
+                   {/* Image Loading Animation */}
+                   {loading && (
+                        <div className="flex justify-center items-center h-48">
+                            <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
+                        </div>
+                    )}
                     <Image 
-                        src={studentData.image} 
+                        src={studentData.image || abbas} 
                         width={288} // Corresponds to 18rem (1 rem = 16px)
                         height={288} // Corresponds to 18rem
-                        className="w-[18rem] h-[18rem] rounded-full" 
-                        alt="Rizvi Abbas" 
+                        className={`w-[18rem] h-[18rem] rounded-full ${loading ? 'hidden' : ''}`} 
+                        alt="Student Image" 
+                       
                     />
                     <button 
                         className="absolute top-2 right-2 bg-blue-500 text-white py-1 px-2 rounded-lg shadow-md hover:bg-blue-600"
@@ -136,33 +178,43 @@ const handleDialogClose = () => {
                     Edit
                 </button>
                 <div className="w-full flex justify-start items-center h-[60%] gap-20 mt-6">
-                    <div>
-                        <div className="flex items-center mt-2">
-                            <h3 className="text-gray-600 text-[1.3rem]">NAME:</h3>
-                            <p className="ml-2 text-[1.3rem]">{studentData.name}</p>
-                        </div>
-                        <div className="flex items-center mt-2">
-                            <h3 className="text-gray-600 text-[1.3rem]">VID:</h3>
-                            <p className="ml-2 text-[1.3rem]">{studentData.vid}</p>
-                        </div>
-                        <div className="flex items-center mt-2">
-                            <h3 className="text-gray-600 text-[1.3rem]">CLASS:</h3>
-                            <p className="ml-2 text-[1.3rem]">{studentData.class}</p>
-                        </div>
-                        <div className="flex items-center mt-2">
-                            <h3 className="text-gray-600 text-[1.3rem]">BATCH:</h3>
-                            <p className="ml-2 text-[1.3rem]">{studentData.batch}</p>
-                        </div>
-                        <div className="flex items-center mt-2">
-                            <h3 className="text-gray-600 text-[1.3rem]">DIV:</h3>
-                            <p className="ml-2 text-[1.3rem]">{studentData.div}</p>
-                        </div>
-                        <div className="flex items-center mt-2">
-                            <h3 className="text-gray-600 text-[1.3rem]">SEM:</h3>
-                            <p className="ml-2 text-[1.3rem]">{studentData.sem}</p>
-                        </div>
+                <div className="w-full flex justify-evenly">
+            {loading ? (
+                // Show the loading spinner while fetching data
+                <div className="flex justify-center items-center h-48">
+                    <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
+                </div>
+            ) : (
+                // Show student data once loading is complete
+                <div className="w-[100%]">
+                    <div className="flex items-center mt-2">
+                        <h3 className="text-gray-600 text-[1.3rem]">NAME:</h3>
+                        <p className="ml-2 text-[1.3rem]">{studentData.name}</p>
                     </div>
-                    <div><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
+                    <div className="flex items-center mt-2">
+                        <h3 className="text-gray-600 text-[1.3rem]">VID:</h3>
+                        <p className="ml-2 text-[1.3rem]">{studentData.vid}</p>
+                    </div>
+                    <div className="flex items-center mt-2">
+                        <h3 className="text-gray-600 text-[1.3rem]">CLASS:</h3>
+                        <p className="ml-2 text-[1.3rem]">{studentData.class}</p>
+                    </div>
+                    <div className="flex items-center mt-2">
+                        <h3 className="text-gray-600 text-[1.3rem]">BATCH:</h3>
+                        <p className="ml-2 text-[1.3rem]">{studentData.batch}</p>
+                    </div>
+                    <div className="flex items-center mt-2">
+                        <h3 className="text-gray-600 text-[1.3rem]">DIV:</h3>
+                        <p className="ml-2 text-[1.3rem]">{studentData.div}</p>
+                    </div>
+                    <div className="flex items-center mt-2">
+                        <h3 className="text-gray-600 text-[1.3rem]">SEM:</h3>
+                        <p className="ml-2 text-[1.3rem]">{studentData.sem}</p>
+                    </div>
+                </div>
+            )}
+        </div>
+                    <div className=""><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
                    
 
                 </div>
@@ -465,11 +517,35 @@ const handleDialogClose = () => {
                 {/* Second Content Section */}
                 <div className="w-[30%] h-[100%] flex flex-col gap-3">
                 <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
-                    <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Projects</h3>
-                    <p className="text-gray-600 mt-3">
-                        Check out your ongoing projects and completed tasks.
-                    </p>
-                </div>
+      <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Activities</h3>
+      <p className="text-gray-600 mt-3">View All your Activities .</p>
+
+      {/* Loading Animation */}
+      {loading ? (
+        <div className="flex justify-center items-center mt-6 w-full h-full">
+          <div className="loader"></div> {/* You can use the CSS spinner from earlier */}
+        </div>
+      ) : error ? (
+        // Display error message if any error occurs during fetching
+        <p className=" mt-4">No Activity Found!!!</p>
+      ) : (
+        // Scrollable container for fetched data
+        <div className="max-h-[100%] overflow-y-auto mt-4">
+          {data.length > 0 ? (
+            data.map((event, index) => (
+              <div key={index} className="p-4 mb-4 bg-gray-100 rounded-lg shadow">
+                <h4 className="text-gray-800 text-lg font-bold">{event.eventName}</h4>
+                <p className="text-gray-600">{event.collegeName}</p>
+                <p className="text-gray-600">Date: {event.eventDate.split("T")[0]}</p>
+                <p className="text-gray-600">Location: {event.location}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-gray-600">No events found</p>
+          )}
+        </div>
+      )}
+    </div>
                 <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
                     <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Projects</h3>
                     <p className="text-gray-600 mt-3">

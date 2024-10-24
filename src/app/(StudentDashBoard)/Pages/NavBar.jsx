@@ -1,6 +1,6 @@
 "use client";
 import { MdHome, MdAddCircleOutline, MdVisibility, MdChat, MdDescription, MdSettings, MdPerson } from "react-icons/md"; 
-import abbas from "../../../Assets/IMG/abbas.jpg";
+import abbas from "../../../Assets/IMG/person.png";
 import Link from 'next/link';
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -55,7 +55,7 @@ export default function NavBar() {
       <div className="w-full h-full flex flex-col p-4">
         <div className="w-full flex flex-col items-center justify-center py-6">
           <Image 
-            src={studentData.image} 
+            src={studentData.image || abbas} 
             width={128} // Set width to 128px
             height={128} // Set height to 128px
             className="w-[8rem] h-[8rem] rounded-full" 
@@ -119,19 +119,29 @@ export default function NavBar() {
             {/* Chats */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
               <MdChat className="text-xl" /> {/* New icon */}
-              <span>Chats</span>
+              <span>Add Projects</span>
             </li>
 
             {/* Docs */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
               <MdDescription className="text-xl" />
-              <span>Docs</span>
+              <span>View Projects</span>
             </li>
 
             {/* Settings */}
             <li className="w-full flex items-center gap-3 px-4 py-2 rounded-xl bg-gray-800 bg-opacity-10 hover:bg-white hover:bg-opacity-20 hover:shadow-xl transition-all duration-300 ease-in-out cursor-pointer">
               <MdSettings className="text-xl" />
-              <span>Settings</span>
+              <Link
+                  href="/chats"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'bg-blue-500 text-[1.2rem] p-2 rounded'
+                      : 'text-[1.2rem] hover:bg-blue-500 p-2 rounded'
+                  }
+                  end
+                >
+                  Chats
+                </Link>
             </li>
 
             {/* Logout */}
