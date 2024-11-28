@@ -1216,6 +1216,26 @@ form.sign-in-form {
 
 /* ANIMATION */
 
+/* Add this to your global CSS file (e.g., styles.css) */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 1rem; /* Adjust the size of the spinner */
+  height: 1rem; /* Adjust the size of the spinner */
+  border: 2px solid transparent;
+  border-top: 2px solid #fff; /* The top part will be visible */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+
 .loader {
   border: 8px solid #f3f3f3; /* Light gray */
   border-top: 8px solid #3498db; /* Blue */

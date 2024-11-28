@@ -19,6 +19,7 @@ export default function StudentHome() {
     const [studentDatas, setStudentDatas] = useState([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [data, setData] = useState([]);
+    const [data2, setData2] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingImage, setLoadingImage] = useState(true); // Track loading state for image
 
@@ -97,6 +98,29 @@ const fetchData = async () => {
     }
   };
 
+  const fetchData2 = async () => {
+    if (status === "authenticated" && session && session.user) {
+      const userID = session.user.id;
+      const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+      try {
+        setLoading(true); // Set loading to true before fetching
+        const response = await axios.get(`http://localhost:3000/api/studentprojects?userId=${userID}`, {
+          headers: {
+            'Authorization': API_KEY, // Pass API key in Authorization header
+          },
+        });
+
+        setData2(response.data); // assuming response.data contains the data
+        console.log(response.data); // For debugging purposes
+      } catch (err) {
+        setError(err.message); // Set error state if the API call fails
+      } finally {
+        setLoading(false); // Set loading to false once the request is complete
+      }
+    }
+  };
+
 useEffect(() => {
        // Animate elements on scroll
        if (typeof document !== "undefined") {
@@ -127,6 +151,7 @@ useEffect(() => {
 
   
       fetchData();
+      fetchData2()
 
 }, [session, status]);
 
@@ -517,41 +542,67 @@ const handleDialogClose = () => {
                 {/* Second Content Section */}
                 <div className="w-[30%] h-[100%] flex flex-col gap-3">
                 <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
-      <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Activities</h3>
-      <p className="text-gray-600 mt-3">View All your Activities .</p>
+  <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Activities</h3>
+  <p className="text-gray-600 mt-3">View all your activities.</p>
 
-      {/* Loading Animation */}
-      {loading ? (
-        <div className="flex justify-center items-center mt-6 w-full h-full">
-          <div className="loader"></div> {/* You can use the CSS spinner from earlier */}
-        </div>
-      ) : error ? (
-        // Display error message if any error occurs during fetching
-        <p className=" mt-4">No Activity Found!!!</p>
+  {/* Loading Animation */}
+  {loading ? (
+    <div className="flex justify-center items-center mt-6 w-full h-full">
+      <div className="loader"></div> {/* Add your CSS spinner here */}
+    </div>
+  ) : error ? (
+    // Display error message if any error occurs during fetching
+    <p className="mt-4 text-gray-800">No Activity Found!!!</p>
+  ) : (
+    // Scrollable container for fetched data
+    <div className="mt-4 overflow-y-auto max-h-[650px]">
+      {data.length > 0 ? (
+        data.map((event, index) => (
+          <div key={index} className="p-4 mb-4 bg-gray-100 rounded-lg shadow">
+            <h4 className="text-gray-800 text-lg font-bold">{event.eventName}</h4>
+            <p className="text-gray-600">{event.collegeName}</p>
+            <p className="text-gray-600">Date: {event.eventDate.split("T")[0]}</p>
+            <p className="text-gray-600">Location: {event.location}</p>
+          </div>
+        ))
       ) : (
-        // Scrollable container for fetched data
-        <div className="max-h-[100%] overflow-y-auto mt-4">
-          {data.length > 0 ? (
-            data.map((event, index) => (
-              <div key={index} className="p-4 mb-4 bg-gray-100 rounded-lg shadow">
-                <h4 className="text-gray-800 text-lg font-bold">{event.eventName}</h4>
-                <p className="text-gray-600">{event.collegeName}</p>
-                <p className="text-gray-600">Date: {event.eventDate.split("T")[0]}</p>
-                <p className="text-gray-600">Location: {event.location}</p>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-600">No events found</p>
-          )}
-        </div>
+        <p className="text-gray-600">No events found</p>
       )}
     </div>
-                <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
-                    <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Projects</h3>
-                    <p className="text-gray-600 mt-3">
-                        Check out your ongoing projects and completed tasks.
-                    </p>
-                </div>
+  )}
+</div>
+
+<div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
+  <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Activities</h3>
+  <p className="text-gray-600 mt-3">View all your activities.</p>
+
+  {/* Loading Animation */}
+  {loading ? (
+    <div className="flex justify-center items-center mt-6 w-full h-full">
+      <div className="loader"></div> {/* Add your CSS spinner here */}
+    </div>
+  ) : error ? (
+    // Display error message if any error occurs during fetching
+    <p className="mt-4 text-gray-800">No Activity Found!!!</p>
+  ) : (
+    // Scrollable container for fetched data
+    <div className="mt-4 overflow-y-auto max-h-[650px]">
+      {data2.length > 0 ? (
+        data2.map((event, index) => (
+          <div key={index} className="p-4 mb-4 bg-gray-100 rounded-lg shadow">
+            <h4 className="text-gray-800 text-lg font-bold">{event.eventName}</h4>
+            <p className="text-gray-600">{event.collegeName}</p>
+            <p className="text-gray-600">Date: {event.eventDate.split("T")[0]}</p>
+            <p className="text-gray-600">Location: {event.location}</p>
+          </div>
+        ))
+      ) : (
+        <p className="text-gray-600">No events found</p>
+      )}
+    </div>
+  )}
+</div>
+
                 </div>
             </div>
         </div>

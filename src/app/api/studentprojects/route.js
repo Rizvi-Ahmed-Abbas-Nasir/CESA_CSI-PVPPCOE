@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 import connectMongoDB from "@/lib/db";
 import { isApiValid } from "@/lib/function";
 import Student from "@/models/student";
-import StudentEvent from "@/models/studentevent"
+import StudentProject from "@/models/studentprojects"
 import streamifier from "streamifier";
 import  cloudinary  from "@/lib/cloudinary";
 
@@ -96,7 +96,7 @@ export async function POST(req) {
     }
 
     // Create a new event document
-    const newEvent = new StudentEvent({
+    const newEvent = new StudentProject({
       userId,
       eventName,
       eventDescription,
@@ -145,69 +145,14 @@ export async function GET(req) {
       return NextResponse.json({ message: "userId is required." }, { status: 400 });
     }
 
-    const studentEvents = await StudentEvent.find({ userId }).exec();
+    const StudentProjects = await StudentProject.find({ userId }).exec();
 
-    if (studentEvents.length > 0) {
-      return NextResponse.json(studentEvents, { status: 200 });
+    if (StudentProjects.length > 0) {
+      return NextResponse.json(StudentProjects, { status: 200 });
     } else {
       return NextResponse.json({ message: "No events found for the given userId." }, { status: 404 });
     }
   } catch (error) {
     return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
-  }
-}
-
-
-
-
-
-
-export async function DELETE(req) {
-  try {
-    const apiKey = req.headers.get("Authorization");
-
-    // Validate API key
-    if (!isApiValid(apiKey)) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    // Connect to the database
-    await connectMongoDB();
-
-    const { searchParams } = new URL(req.url);
-    const _id = searchParams.get("_id"); // Extract `_id` from query string
-
-    // Validate `_id`
-    if (!_id) {
-      return NextResponse.json({ message: "_id is required." }, { status: 400 });
-    }
-
-    // Attempt to delete the document with the provided `_id`
-    const deleteResult = await StudentEvent.deleteOne({ _id }).exec();
-
-    if (deleteResult.deletedCount > 0) {
-      return NextResponse.json(
-        { message: `Event with _id ${_id} deleted successfully.` },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        { message: `No event found with _id ${_id}.` },
-        { status: 404 }
-      );
-    }
-  } catch (error) {
-    if (error.kind === "ObjectId") {
-      // Handle invalid MongoDB ObjectId format
-      return NextResponse.json(
-        { message: "Invalid _id format.", error: error.message },
-        { status: 400 }
-      );
-    }
-    // Handle other errors
-    return NextResponse.json(
-      { message: "Internal Server Error", error: error.message },
-      { status: 500 }
-    );
   }
 }
