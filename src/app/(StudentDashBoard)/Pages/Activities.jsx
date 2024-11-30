@@ -1,11 +1,17 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useSession } from "next-auth/react";
+import Alert from "../Components/Alert"
 
 
 function CreateEvent() {
+  const [message, setMessage] = useState("");
+  const [Description, setDescription] = useState("");
+  const [type, setType] = useState("");
+
   const { data: session } = useSession();
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     eventName: "",
@@ -150,9 +156,7 @@ function CreateEvent() {
         // Log the full response to see what it contains
         console.log(response);
       
-        // Check if the response contains a message
-        const message = response.data.message || "Event created successfully.";
-        alert(message);
+       
       
         // Reset form data
         setFormData({
@@ -177,8 +181,18 @@ function CreateEvent() {
       
         setError("");
         setIsLoading(false);
+         // Check if the response contains a message
+         setMessage(response.data.message || "Alert!!.");
+         setDescription(response.data.message || "Your Data is Submitted.");
+         setType("success")
+        setIsPopupVisible(true)
+
       } catch (error) {
+        setMessage(response.data.message || "Alert!!.");
+        setDescription(error.response?.data?.message || "Error creating event. Please try again..");
+        setType("warning")
         console.error("Error:", error); // Log the error for debugging
+        setIsPopupVisible(true)
         setError(error.response?.data?.message || "Error creating event. Please try again.");
         setIsLoading(false);
       }
@@ -189,12 +203,33 @@ function CreateEvent() {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
+
   };
+
+ 
+
+  useEffect(() => {
+    let timer;
+    if (isPopupVisible) {
+      timer = setTimeout(() => {
+        setIsPopupVisible(false); // Auto-hide after 5 seconds
+      }, 5000);
+    }
+    return () => clearTimeout(timer); // Cleanup timer
+  }, [isPopupVisible]);
   
+console.log(isPopupVisible)
+console.log(message)
+console.log(Description)
 
 
   return (
     <div className="w-full lg:w-[100%] p-8 border border-gray-300 shadow-md rounded-lg text-black">
+          
+    {isPopupVisible && (
+      <Alert message={message} Description={Description} type={type}  />
+    )}
+    
   <h2 className="text-2xl mb-6 text-center">EVENT</h2>
 
   {/* Error Message */}

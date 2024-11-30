@@ -4,13 +4,19 @@ import { useSession } from "next-auth/react";
 import DeleteAlert from "../Components/DeletePopUp"
 import EditBox from "../Components/EditBox"
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
-
+import Alert from "../Components/Alert"
 
 
 // import CustomAlert from "../components/customAlert";
 
 const EventCompo = () => {
+  const [type, setType] = useState("");
+
   const { data: session, status } = useSession();
+  const [message, setMessage] = useState("");
+  const [execute, setExecute] = useState(false);
+  const [Description, setDescription] = useState("");
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   const [studentData, setStudentData] = useState({
     name: "Your Name",
@@ -32,7 +38,6 @@ const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false); // This will handle the loading state for delete
 
   const [error, setError] = useState(null);
-  const [eventList, setEventList] = useState([]); // Replace with your event list
   const [transactionIds, setTransactionIds] = useState({});
   const [transactionErrors, setTransactionErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState(""); // State for custom alert message
@@ -44,6 +49,8 @@ const [isDialogOpen, setIsDialogOpen] = useState(false);
   // const [showAlert, setShowAlert] = useState(false);
   // const [alertMessage, setAlertMessage] = useState('');
   const [currentEventIndex, setCurrentEventIndex] = useState(null);
+  const [StudentIndex, setStudentIndex] = useState(null);
+
 
   
  
@@ -103,11 +110,30 @@ const [isDialogOpen, setIsDialogOpen] = useState(false);
       }
     }
   };
-  const handleConfirmDelete = async () => {
 
+
+const handleConfirmDelete = async () => {
     fetchData();
-   
-  };
+    setExecute(true); // Set execute flag
+};
+
+useEffect(() => {
+    // This will run whenever execute changes
+    if (execute) {
+        setMessage("Alert!!.");
+        setDescription("Delete Successfully.");
+        setType("info");
+        setIsPopupVisible(true);
+        console.log("Popup state set to true");
+    }
+}, [execute]); // Dependency array ensures this runs only when 'execute' changes
+
+useEffect(() => {
+  // Persist `isPopupVisible` in local storage or session storage
+  if (isPopupVisible) {
+      localStorage.setItem('isPopupVisible', 'true');
+  }
+}, [isPopupVisible]);
 
 
 const fetchStudentData = async () => {
@@ -137,7 +163,8 @@ const fetchStudentData = async () => {
       }
   }
 };
-const handleUpdateEvent = () => {
+const handleUpdateEvent = (studentId) => {
+  setStudentIndex(studentId)
   setIsDialogOpen(true);
 };
 
@@ -228,18 +255,21 @@ const handleDialogClose = () => {
         message={alertMessage}
         onConfirm={handleConfirmDelete}
         currentEventIndex={currentEventIndex}
-        eventList={eventList}
         onCancel={() => setShowAlert(false)}
       />
     )}
       <EditBox 
                 isOpen={isDialogOpen} 
+                StudentIndex={StudentIndex}
                 onClose={handleDialogClose} 
                 studentData={studentData} 
                 onSave={handleSave}        
 
 
             />
+             {isPopupVisible && (
+      <Alert message={message} Description={Description} type={type}  />
+    )}
 
     {data.length > 0 ? (
       <div className="flex flex-wrap gap-8 items-center justify-center py-10 w-full">
@@ -258,7 +288,7 @@ const handleDialogClose = () => {
                 
                   <button
                     className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-6 py-2 rounded-xl flex items-center gap-1"
-                    onClick={() => handleUpdateEvent(index)}
+                    onClick={() => handleUpdateEvent(event._id)}
                   >
                     <FaEdit />
                   </button>

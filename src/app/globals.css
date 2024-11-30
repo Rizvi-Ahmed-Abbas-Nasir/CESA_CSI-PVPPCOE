@@ -1217,14 +1217,37 @@ form.sign-in-form {
 /* ANIMATION */
 
 /* Add this to your global CSS file (e.g., styles.css) */
-@keyframes spin {
+@keyframes slide-out {
   0% {
-    transform: rotate(0deg);
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
   }
   100% {
-    transform: rotate(360deg);
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
   }
 }
+
+.animate-slide-out {
+  animation: slide-out 0.5s ease-out forwards;
+}
+
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-50%) translateY(-20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.5s ease-out;
+}
+
 
 .spinner {
   width: 1rem; /* Adjust the size of the spinner */

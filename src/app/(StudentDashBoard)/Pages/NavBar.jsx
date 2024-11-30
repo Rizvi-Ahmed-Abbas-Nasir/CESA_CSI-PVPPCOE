@@ -9,6 +9,7 @@ import axios from 'axios';
 
 export default function NavBar() {
   const { data: session, status } = useSession();
+  const [loading, setLoading] = useState(true);
 
   const [studentData, setStudentData] = useState({
     name: "Your Name",
@@ -27,6 +28,8 @@ export default function NavBar() {
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
       try {
+        setLoading(true); 
+
         const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
           headers: {
             Authorization: `${API_KEY}`,
@@ -43,6 +46,10 @@ export default function NavBar() {
         console.error("Error fetching student details:", error);
         setError("An error occurred while fetching student details.");
       }
+      finally{
+        setLoading(false); 
+
+      }
     }
   };
 
@@ -53,19 +60,29 @@ export default function NavBar() {
   return (
     <div className="w-[95%] h-[97vh] flex rounded-xl items-center justify-start bg-blue-700">
       <div className="w-full h-full flex flex-col p-4">
-        <div className="w-full flex flex-col items-center justify-center py-6">
-          <Image 
-            src={studentData.image || abbas} 
-            width={128} // Set width to 128px
-            height={128} // Set height to 128px
-            className="w-[8rem] h-[8rem] rounded-full" 
-            alt="Rizvi Abbas" 
-          />  
-        <h4 className="text-white text-[1.2rem] font-semibold mt-3 text-center">
-  {studentData.name.split(" ").slice(0, 2).join(" ")}
-</h4>
 
-        </div>
+      <div className="w-full flex flex-col items-center justify-center py-6">
+  {/* Image Loading Animation */}
+  <div className="w-[8rem] h-[8rem] relative">
+    {loading && (
+      <div className="absolute inset-0 flex justify-center items-center">
+        <div className="spinner ease-linear rounded-full border-4 border-t-4 border-gray-200 h-10 w-10"></div>
+      </div>
+    )}
+    <Image
+      src={studentData.image || abbas}
+      width={128} // Corresponds to 8rem
+      height={128} // Corresponds to 8rem
+      className={`w-full h-full rounded-full ${loading ? 'opacity-0' : 'opacity-100'}`}
+      alt="Student Image"
+    />
+  </div>
+
+  <h4 className="text-white text-[1.2rem] font-semibold mt-3 text-center">
+    {studentData.name.split(" ").slice(0, 2).join(" ")}
+  </h4>
+</div>
+
 
         <div className="w-full flex flex-col items-start justify-center py-8">
           <ul className="flex flex-col text-white gap-4 w-full">

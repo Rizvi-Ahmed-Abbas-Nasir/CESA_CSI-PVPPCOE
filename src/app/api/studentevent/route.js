@@ -158,7 +158,113 @@ export async function GET(req) {
 }
 
 
+export async function PUT(req) {
+  try {
+    // Connect to MongoDB
+    await connectMongoDB();
 
+    // Extract `_id` from the query parameters
+    const { searchParams } = new URL(req.url);
+    const eventId = searchParams.get("_id");
+
+    if (!eventId) {
+      return NextResponse.json({ message: "Event ID is required for updating." }, { status: 400 });
+    }
+
+    // Get form data
+    const formData = await req.formData();
+
+    // Extract fields from form data
+    const eventName = formData.get("eventName");
+    const eventDescription = formData.get("eventDescription");
+    const collegeName = formData.get("collegeName");
+    const organization = formData.get("organization");
+    const eventNotice = formData.get("eventNotice");
+    const eventDate = formData.get("eventDate") ? new Date(formData.get("eventDate")) : null;
+    const category = formData.get("category");
+    const time = formData.get("time");
+    const department = formData.getAll("department");
+    const eligible_degree_year = formData.getAll("eligible_degree_year");
+    const isMoney = formData.get("isMoney") === "true";
+    const money = formData.get("money");
+    const imageFile = formData.get("image");
+    const certificateFile = formData.get("certificate");
+
+    // Find the event by ID
+    const existingEvent = await StudentEvent.findById(eventId);
+    if (!existingEvent) {
+      return NextResponse.json({ message: "Event not found." }, { status: 404 });
+    }
+
+    let imageUrl = existingEvent.image;
+    let certificateUrl = existingEvent.certificate;
+
+    // Upload new event banner image to Cloudinary, if provided
+    if (imageFile && imageFile instanceof Blob) {
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      const stream = streamifier.createReadStream(buffer);
+
+      imageUrl = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "events" },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result.secure_url);
+          }
+        );
+
+        stream.pipe(uploadStream);
+      });
+    }
+
+    // Upload new certificate file to Cloudinary, if provided
+    if (certificateFile && certificateFile instanceof Blob) {
+      const buffer = Buffer.from(await certificateFile.arrayBuffer());
+      const stream = streamifier.createReadStream(buffer);
+
+      certificateUrl = await new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { folder: "certificates" },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result.secure_url);
+          }
+        );
+
+        stream.pipe(uploadStream);
+      });
+    }
+
+    // Update the event
+    existingEvent.eventName = eventName || existingEvent.eventName;
+    existingEvent.eventDescription = eventDescription || existingEvent.eventDescription;
+    existingEvent.collegeName = collegeName || existingEvent.collegeName;
+    existingEvent.organization = organization || existingEvent.organization;
+    existingEvent.eventNotice = eventNotice || existingEvent.eventNotice;
+    existingEvent.eventDate = eventDate || existingEvent.eventDate;
+    existingEvent.category = category || existingEvent.category;
+    existingEvent.time = time || existingEvent.time;
+    existingEvent.department = department.length ? department : existingEvent.department;
+    existingEvent.eligible_degree_year = eligible_degree_year.length
+      ? eligible_degree_year
+      : existingEvent.eligible_degree_year;
+    existingEvent.isMoney = isMoney;
+    existingEvent.money = isMoney ? money : undefined;
+    existingEvent.image = imageUrl || existingEvent.image;
+    existingEvent.certificate = certificateUrl || existingEvent.certificate;
+
+    const updatedEvent = await existingEvent.save();
+
+    return NextResponse.json(updatedEvent, { status: 200 });
+  } catch (error) {
+    console.error("Error updating event:", error);
+    return NextResponse.json({ message: "Error updating event", error: error.message }, { status: 500 });
+  }
+}
 
 
 

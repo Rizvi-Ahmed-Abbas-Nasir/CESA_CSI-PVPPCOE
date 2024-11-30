@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const DeleteAlert = ({ message, onCancel, currentEventIndex, setEventList }) => {
+const DeleteAlert = ({ message, onConfirm,  currentEventIndex, onCancel }) => {
   const [deleteLoading, setDeleteLoading] = useState(false); // Manage the loading state within the component
 
   const handleConfirmDelete = async () => {
@@ -22,19 +22,14 @@ const DeleteAlert = ({ message, onCancel, currentEventIndex, setEventList }) => 
           }
         );
 
-        if (response.status === 200) {
-          // Update the event list by removing the deleted event
-          setEventList((prevEventList) =>
-            prevEventList.filter((event) => event._id !== currentEventIndex)
-          );
-          console.log(response.data.message);
-        }
+      
       } catch (error) {
         console.error("Error deleting event:", error.response?.data?.message || error.message);
       } finally {
         // Reset the delete loading state and close the alert
         setDeleteLoading(false);
         onCancel(); // Close the alert
+        onConfirm()
       }
     }
   };
