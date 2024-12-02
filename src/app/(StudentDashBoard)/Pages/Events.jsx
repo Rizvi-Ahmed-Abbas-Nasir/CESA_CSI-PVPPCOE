@@ -5,6 +5,7 @@ import DeleteAlert from "../Components/DeletePopUp"
 import EditBox from "../Components/EditBox"
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import Alert from "../Components/Alert"
+import toast, { Toaster } from 'react-hot-toast';
 
 
 // import CustomAlert from "../components/customAlert";
@@ -113,27 +114,10 @@ const [isDialogOpen, setIsDialogOpen] = useState(false);
 
 
 const handleConfirmDelete = async () => {
+    toast.success("Successfully Deleted");
     fetchData();
-    setExecute(true); // Set execute flag
 };
 
-useEffect(() => {
-    // This will run whenever execute changes
-    if (execute) {
-        setMessage("Alert!!.");
-        setDescription("Delete Successfully.");
-        setType("info");
-        setIsPopupVisible(true);
-        console.log("Popup state set to true");
-    }
-}, [execute]); // Dependency array ensures this runs only when 'execute' changes
-
-useEffect(() => {
-  // Persist `isPopupVisible` in local storage or session storage
-  if (isPopupVisible) {
-      localStorage.setItem('isPopupVisible', 'true');
-  }
-}, [isPopupVisible]);
 
 
 const fetchStudentData = async () => {

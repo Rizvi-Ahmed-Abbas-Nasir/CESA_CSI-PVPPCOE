@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import OnScrollAnimation from "@/components/OnScrollAnimmation";
 import StudentProgressChart from "@/components/charts"
 import ProfileWithCharts from "@/components/CircularGraph"
+import toast, { Toaster } from 'react-hot-toast';
 
 
 

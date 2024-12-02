@@ -4,6 +4,8 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useSession } from "next-auth/react";
 import { motion, AnimatePresence } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const EditBox = ({ isOpen, onClose, StudentIndex, eventData, onSave }) => {
     const { data: session } = useSession();
@@ -76,12 +78,14 @@ const EditBox = ({ isOpen, onClose, StudentIndex, eventData, onSave }) => {
             );
 
             if (response.status === 200) {
+                toast.success("Data Successfully Updated")
                 onSave(formData);
                 onClose();
             } else {
                 setError("Failed to save data. Please try again.");
             }
         } catch (err) {
+            toast.error("Error Updating Data ")
             console.error("Error during form submission:", err);
             setError("An error occurred while saving data. Please try again.");
         } finally {

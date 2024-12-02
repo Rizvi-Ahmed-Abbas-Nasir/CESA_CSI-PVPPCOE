@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
+
 
 const DeleteAlert = ({ message, onConfirm,  currentEventIndex, onCancel }) => {
   const [deleteLoading, setDeleteLoading] = useState(false); // Manage the loading state within the component
@@ -24,6 +26,7 @@ const DeleteAlert = ({ message, onConfirm,  currentEventIndex, onCancel }) => {
 
       
       } catch (error) {
+        toast.error("Error Deleting")
         console.error("Error deleting event:", error.response?.data?.message || error.message);
       } finally {
         // Reset the delete loading state and close the alert

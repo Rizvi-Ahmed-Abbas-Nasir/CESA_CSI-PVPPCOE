@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useSession } from "next-auth/react";
 import Alert from "../Components/Alert"
+import toast, { Toaster } from 'react-hot-toast';
 
 
 function CreateEvent() {
@@ -182,17 +183,20 @@ function CreateEvent() {
         setError("");
         setIsLoading(false);
          // Check if the response contains a message
-         setMessage(response.data.message || "Alert!!.");
-         setDescription(response.data.message || "Your Data is Submitted.");
-         setType("success")
-        setIsPopupVisible(true)
+        //  setMessage(response.data.message || "Alert!!.");
+        //  setDescription(response.data.message || "Your Data is Submitted.");
+         toast.success("Your Data is Submitted Successfully")
+        //  setType("success")
+        // setIsPopupVisible(true)
 
       } catch (error) {
-        setMessage(response.data.message || "Alert!!.");
-        setDescription(error.response?.data?.message || "Error creating event. Please try again..");
-        setType("warning")
+        toast.error("Error creating event. Please try again.")
+
+        // setMessage(response.data.message || "Alert!!.");
+        // setDescription(error.response?.data?.message || "Error creating event. Please try again..");
+        // setType("warning")
         console.error("Error:", error); // Log the error for debugging
-        setIsPopupVisible(true)
+        // setIsPopupVisible(true)
         setError(error.response?.data?.message || "Error creating event. Please try again.");
         setIsLoading(false);
       }
