@@ -12,7 +12,7 @@ const AdminHeader = () => {
   };
 
   return (
-    <div className="w-full  text-white">
+    <div className="w-[90%] h-[97vh] rounded-xl bg-[#1b1b1b] text-white">
       {/* Sidebar */}
       <div className="xl:w-[100%] h-full  justify-center item-center bg-black-800 flex-col hidden xl:flex">
         <nav className="flex-grow px-4 py-6  justify-center item-center flex h-[100%]">
@@ -20,7 +20,7 @@ const AdminHeader = () => {
             <li>
               <Link href="/" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
                 <FaHome className="mr-2" />
-                <span className="font-medium text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">HomePage</span>
+                <span className="font-medium text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">Home page</span>
               </Link>
             </li>
             <li>

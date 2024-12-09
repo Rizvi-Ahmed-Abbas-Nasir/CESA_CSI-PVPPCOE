@@ -4,25 +4,35 @@ import React, { useState } from "react";
 import { FaArrowRight, FaSearch } from "react-icons/fa"; // Import the FaSearch icon
 import { useSession } from "next-auth/react";
 import NAV from "../../Navbar";
+import toast, { Toaster } from 'react-hot-toast';
+import axios from "axios";
 
-const CompatibilityForm = () => {
-  const { data: session } = useSession();
-  const [selectedIssues, setSelectedIssues] = useState([]);
+const TechnicalEventForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toISOString().split("T")[0];
+
+  };
+
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    issueType: "",
+    eventTitle: "",
+    associateName: "",
+    date: "",
+    eventType: "",
     description: "",
     websiteLink: "",
-    screenshot: null,
+    eventImage: null,
   });
 
-  const handleIssueSelection = (issue) => {
-    setSelectedIssues((prevSelected) =>
-      prevSelected.includes(issue)
-        ? prevSelected.filter((item) => item !== issue)
-        : [...prevSelected, issue]
+  const handleCategorySelection = (category) => {
+    setSelectedCategories((prevSelected) =>
+      prevSelected.includes(category)
+        ? prevSelected.filter((item) => item !== category)
+        : [...prevSelected, category]
     );
   };
 
@@ -34,16 +44,109 @@ const CompatibilityForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-    console.log("Selected Issues:", selectedIssues);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({
+      ...prevData,
+      eventImage: file,
+    }));
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    console.log(formData);
+    console.log("Selected Categories:", selectedCategories);
+  
+    // Validate form fields
+    if (
+      !formData.associateName ||
+      !formData.date ||
+      !formData.eventType ||
+      !formData.description ||
+      !formData.websiteLink ||
+      !formData.eventImage
+    ) {
+      setError("Please fill all required fields.");
+      setIsLoading(false);
+      return;
+    }
+  
+    // Add new categories to the list of valid categories
+    const validCategories = ['Competition', 'Hackathon', 'Seminar', 'Webinar', 'Workshop'];
+  
+    // Check if the selected category is valid
+    if (!validCategories.includes(formData.eventType)) {
+      setError("Invalid event type. Please select a valid event category.");
+      setIsLoading(false);
+      return;
+    }
+  
+    try {
+      const formattedDate = formatDate(formData.date); // Assuming you have a function for this
+      const data = new FormData();
+  
+      // Append form data
+      data.append("eventTitle", formData.eventTitle);
+      data.append("associateName", formData.associateName);
+      data.append("eventType", formData.eventType);
+      data.append("date", formattedDate);
+      data.append("description", formData.description);
+      data.append("websiteLink", formData.websiteLink);
+  
+      // Append the image if it exists
+      if (formData.eventImage) {
+        data.append("eventImage", formData.eventImage);
+      }
+      data.append("selectedCategories", formData.selectedCategories);
+  
+      // Check if API_KEY is correct
+      const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+      console.log("API Key from client:", API_KEY); // Log to verify the API key
+  
+      // Use toast.promise to handle loading, success, and error states
+      await toast.promise(
+        axios.post('http://localhost:3000/api/upcommingevent', data, {
+          headers: {
+            Authorization: `${API_KEY}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }),
+        {
+          loading: 'Saving...',
+          success: <b>Event created successfully!</b>,
+          error: <b>Could not save event. Please try again.</b>,
+        }
+      );
+  
+      // Reset form data after successful submission
+      setFormData({
+        eventTitle: "",
+        associateName: "",
+        eventType: "",
+        date: "",
+        description: "",
+        websiteLink: "",
+        eventImage: null,
+      });
+  
+      setError(""); // Clear error if submission is successful
+      setIsLoading(false);
+  
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error.response?.data?.message || "Error creating event. Please try again.");
+      setIsLoading(false);
+    }
+  };
+  
+  
+
 
   return (
     <div className="flex w-full h-[100vh] xl:flex-row flex-col">
       <NAV />
-      <div className="flex gap-3 h-full w-full flex-col  bg-[#141414] py-9 px-4">
+      <div className="flex gap-3 h-full w-full flex-col bg-[#141414] py-9 pr-8 pl-5">
         <div className="w-full justify-start items-start mb-4">
           {/* Search input with icon */}
           <div className="relative">
@@ -51,7 +154,6 @@ const CompatibilityForm = () => {
               type="text"
               name="search"
               placeholder="Search"
-              value={formData.name}
               onChange={handleInputChange}
               className="w-[30%] px-4 py-3 pl-10 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
               required
@@ -59,20 +161,18 @@ const CompatibilityForm = () => {
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
           </div>
         </div>
-        <div className=" p-10 rounded-lg flex items-center flex-col bg-[#1b1b1b] shadow-lg w-full">
-         
-        
+        <div className="p-10 rounded-xl flex items-center flex-col bg-[#1b1b1b] shadow-lg w-full">
           <form onSubmit={handleSubmit} className="space-y-7 py-2 bg-[#1b1b1b] w-[90%]">
-          <div className="w-[100%] flex items-start">
-          <h3 className="text-3xl font-bold mb-6 text-white">Product Application</h3>
-          </div>
+            <div className="w-[100%] flex items-start">
+              <h3 className="text-3xl font-bold mb-6 text-white">Add UpComming Event</h3>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-[100%]">
               <div className="space-y-2">
                 <input
                   type="text"
-                  name="name"
-                  placeholder="Your Name"
-                  value={formData.name}
+                  name="eventTitle"
+                  placeholder="Event Title"
+                  value={formData.eventTitle}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
                   required
@@ -80,10 +180,10 @@ const CompatibilityForm = () => {
               </div>
               <div className="space-y-2">
                 <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={formData.email}
+                  type="text"
+                  name="associateName"
+                  placeholder="Associate Name"
+                  value={formData.associateName}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
                   required
@@ -94,10 +194,9 @@ const CompatibilityForm = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-[100%]">
               <div className="space-y-2">
                 <input
-                  type="text"
-                  name="phone"
-                  placeholder="Your Number"
-                  value={formData.phone}
+                  type="date"
+                  name="date"
+                  value={formData.date}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
                   required
@@ -105,25 +204,25 @@ const CompatibilityForm = () => {
               </div>
               <div className="space-y-2">
                 <select
-                  name="issueType"
-                  value={formData.issueType}
+                  name="eventType"
+                  value={formData.eventType}
                   onChange={handleInputChange}
                   className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
                   required
                 >
-                  <option value="" className="text-white">Select Issue Type</option>
-                  <option value="ui_layout">UI/UX - Layout & Responsiveness</option>
-                  <option value="ui_interactivity">UI/UX - Interactivity & Animations</option>
-                  <option value="ui_text_errors">UI/UX - Text & Content Errors</option>
-                  <option value="func_navigation">Functional - Navigation & Links</option>
-                  <option value="perf_loading_speed">Performance - Loading Speed</option>
+                  <option value="" className="text-white">Select Event Type</option>
+                  <option value="Competition">Competition</option>
+                  <option value="Hackathon">Hackathon</option>
+                  <option value="Seminar">Seminar</option>
+                  <option value="Webinar">Webinar</option>
+                  <option value="Workshop">Workshop</option>
                 </select>
               </div>
             </div>
 
             <textarea
               name="description"
-              placeholder="Describe the issue"
+              placeholder="Description of Event"
               value={formData.description}
               onChange={handleInputChange}
               className="w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white h-24"
@@ -139,46 +238,47 @@ const CompatibilityForm = () => {
                 onChange={handleInputChange}
                 className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
               />
-            <div className="space-y-2">
-            <div className="relative w-full">
-              <input
-                type="file"
-                name="screenshot1"
-                accept="image/*"
-                id="file-upload-1"
-                onChange={handleInputChange}
-                className="hidden"
-              />
-              <label
-                htmlFor="file-upload-1"
-                className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white cursor-pointer flex justify-start items-center"
-              >
-                Choose File
-              </label>
-            </div>
-          </div>
-
+              <div className="space-y-2">
+                <div className="relative w-full">
+                  <input
+                    type="file"
+                    name="eventImage"
+                    accept="image/*"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="w-full px-4 py-3 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white cursor-pointer flex justify-start items-center"
+                  >
+                    Add Image
+                  </label>
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-4">
               {[
-                "Layout & Responsiveness",
-                "Interactivity & Animations",
-                "Performance Optimization",
-                "Security Patches",
-                "Mobile Optimization",
-              ].map((issue, idx) => (
+                "Cloud Computing",
+                "Artificial Intelligence",
+                "Blockchain",
+                "Cybersecurity",
+                "Data Science",
+                "DevOps",
+                "Web Development",
+              ].map((category, idx) => (
                 <button
                   key={idx}
                   type="button"
                   className={`px-6 py-2 rounded-full border ${
-                    selectedIssues.includes(issue)
+                    selectedCategories.includes(category)
                       ? "bg-gray-800 text-white"
                       : "text-white border-white bg-[#202020] hover:bg-[#1f1e1e] hover:text-white"
                   }`}
-                  onClick={() => handleIssueSelection(issue)}
+                  onClick={() => handleCategorySelection(category)}
                 >
-                  + {issue}
+                  + {category}
                 </button>
               ))}
             </div>
@@ -191,7 +291,6 @@ const CompatibilityForm = () => {
                 Submit <FaArrowRight />
               </button>
             </div>
-
           </form>
         </div>
       </div>
@@ -199,4 +298,4 @@ const CompatibilityForm = () => {
   );
 };
 
-export default CompatibilityForm;
+export default TechnicalEventForm;

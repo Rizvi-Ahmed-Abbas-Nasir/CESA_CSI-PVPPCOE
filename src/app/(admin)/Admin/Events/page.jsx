@@ -53,7 +53,7 @@ const CompatibilityForm = () => {
   return (
     <div className="flex w-full h-[100vh] xl:flex-row flex-col">
       <NAV />
-      <div className="flex gap-3 h-full w-full flex-col bg-[#141414] py-9 px-4 overflow-y-auto max-h-[100vh]">
+      <div className="flex gap-3 h-[100vh] w-full flex-col bg-[#141414] py-9 px-4 overflow-y-auto max-h-[100vh]">
         <div className="w-full justify-start items-start mb-4">
           {/* Search input with icon */}
           <div className="relative">

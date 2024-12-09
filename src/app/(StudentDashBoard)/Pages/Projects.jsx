@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useSession } from "next-auth/react";
+import toast, { Toaster } from 'react-hot-toast';
 
 
 function CreateEvent() {
@@ -151,8 +152,6 @@ function CreateEvent() {
         console.log(response);
       
         // Check if the response contains a message
-        const message = response.data.message || "Event created successfully.";
-        alert(message);
       
         // Reset form data
         setFormData({
@@ -174,10 +173,14 @@ function CreateEvent() {
           certificate: null,
           eventStatus: "",
         });
+        toast.success("Successfully Added Project")
+
       
         setError("");
         setIsLoading(false);
       } catch (error) {
+        toast.error("Error creating event. Please try again.")
+
         console.error("Error:", error); // Log the error for debugging
         setError(error.response?.data?.message || "Error creating event. Please try again.");
         setIsLoading(false);

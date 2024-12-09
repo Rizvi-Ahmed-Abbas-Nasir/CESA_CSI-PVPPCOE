@@ -15,12 +15,12 @@ const MAX_STALE_TIME = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export async function POST(req) {
   try {
-    // const apiKey = req.headers.get("Authorization");
+    const apiKey = req.headers.get("Authorization");
 
-    // // Validate the API key
-    // if (!isApiValid(apiKey)) {
-    //   return NextResponse.json("Unauthorized", { status: 401 });
-    // }
+    // Validate the API key
+    if (!isApiValid(apiKey)) {
+      return NextResponse.json("Unauthorized", { status: 401 });
+    }
 
     await connectMongoDB();
     

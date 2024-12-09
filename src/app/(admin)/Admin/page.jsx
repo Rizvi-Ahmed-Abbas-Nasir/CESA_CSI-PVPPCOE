@@ -7,7 +7,7 @@ export default function Page() {
   const { data: session } = useSession();
 
   return (
-    <div>
+    <div className="bg-[#202020]">
       {/* {session?.user?.role === 'admin' ? ( */}
         <AdminPanel />
       {/* //  ) : (
