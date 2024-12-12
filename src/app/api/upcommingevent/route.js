@@ -29,7 +29,7 @@ export async function POST(req) {
     const eventType = formData.get("eventType");
     const description = formData.get("description");
     const websiteLink = formData.get("websiteLink");
-    const selectedCategories = formData.getAll("selectedCategories");
+    const selectedCategories = JSON.parse(formData.get("selectedCategories") || "[]");
     const eventImageFile = formData.get("eventImage");
 
     // Validate required fields
@@ -76,7 +76,7 @@ export async function POST(req) {
       description,
       websiteLink,
       eventImage: eventImageUrl || undefined,
-      selectedCategories: selectedCategories.length ? selectedCategories : [],
+      selectedCategories
     });
 
     // Save the new event to the database
@@ -92,5 +92,32 @@ export async function POST(req) {
       { message: "Error creating event", error: error.message },
       { status: 500 }
     );
+  }
+}
+
+
+export async function GET(req) {
+  try {
+    const apiKey = req.headers.get("Authorization");
+    console.log("API Key:", apiKey);
+
+    if (!isApiValid(apiKey)) {
+      return NextResponse.json("Unauthorized", { status: 401 });
+    }
+
+    await connectMongoDB();
+    console.log("Connected to MongoDB");
+
+    const Upcommingevet = await Upcommingevets.find().sort({ _id: -1 }).exec();
+    console.log("Retrieved Events:", Upcommingevet);
+
+    if (Upcommingevet.length > 0) {
+      return NextResponse.json(Upcommingevet, { status: 200 });
+    } else {
+      return NextResponse.json({ message: "No events found." }, { status: 404 });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
   }
 }

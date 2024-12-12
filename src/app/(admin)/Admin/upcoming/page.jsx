@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { FaArrowRight, FaSearch } from "react-icons/fa"; // Import the FaSearch icon
-import { useSession } from "next-auth/react";
 import NAV from "../../Navbar";
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
@@ -98,8 +97,9 @@ const TechnicalEventForm = () => {
       if (formData.eventImage) {
         data.append("eventImage", formData.eventImage);
       }
-      data.append("selectedCategories", formData.selectedCategories);
-  
+      if (selectedCategories && selectedCategories.length > 0) {
+        data.append("selectedCategories", JSON.stringify(selectedCategories)); // Send as stringified array
+      }  
       // Check if API_KEY is correct
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
       console.log("API Key from client:", API_KEY); // Log to verify the API key

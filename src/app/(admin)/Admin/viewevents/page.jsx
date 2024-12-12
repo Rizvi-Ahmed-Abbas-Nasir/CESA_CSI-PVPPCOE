@@ -1,200 +1,183 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import NAV from "../../Navbar";
-import { useSession } from "next-auth/react";
-import Unauthorized from "../../Unauthorized";
 
-export default function Page() {
-  const [members, setMembers] = useState([]);
-  const { data: session } = useSession();
-  const [pdfFiles, setPdfFiles] = useState({});
+import { FaArrowRight, FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa"; 
+import NAV from "../../Navbar";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
+import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
+import toast from "react-hot-toast";
+
+const ViewUpcommingEvent = () => {
+  const [type, setType] = useState("");
+  const [message, setMessage] = useState("");
+  const [execute, setExecute] = useState(false);
+  const [Description, setDescription] = useState("");
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const fetchMembers = async () => {
-        try {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_HOST}/api/admin`,
-            {
-              method: "GET",
-              headers: {
-                authorization: process.env.NEXT_PUBLIC_API_KEY,
-              },
-            }
-          );
-  
-          if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-          }
-  
-          const data = await response.json();
-          setMembers(data);
-        } catch (error) {
-          console.error("Error fetching members:", error);
-        }
-      };
-  
-      fetchMembers();
-    }
+    const fetchData = async () => {
+      const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+      try {
+        console.log("Fetching events data...");
+        const response = await axios.get("http://localhost:3000/api/events", {
+          headers: {
+            Authorization: API_KEY,
+          },
+        });
+        console.log("API Response:", response.data);
+        setData(response.data);
+      } catch (err) {
+        console.error("Error fetching events:", err.message);
+        setError(err.message);
+      }
+    };
+
+    fetchData();
   }, []);
-  
 
-  const handleFetchPdf = async (fileName, formType) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/getFile`, {
-        method: "GET",
-        headers: {
-          authorization: process.env.NEXT_PUBLIC_API_KEY,
-          fileName,
-          formType,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-  
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
-      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-    } catch (error) {
-      console.error("Error fetching PDF:", error);
-    }
+  const CustomImageSlider = ({ images }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const goToPrevious = () => {
+      setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+    };
+
+    const goToNext = () => {
+      setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+    };
+
+    return (
+      <div className="relative w-full h-[200px] flex items-center justify-center ">
+        {/* Image */}
+        <img
+          src={images[currentIndex]}
+          alt={`Screenshot ${currentIndex + 1}`}
+          className="w-full h-full object-cover rounded-lg shadow-md"
+        />
+
+        {/* Previous Button */}
+        <button
+          className="absolute left-2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700"
+          onClick={goToPrevious}
+        >
+          {"<"}
+        </button>
+
+        {/* Next Button */}
+        <button
+          className="absolute right-2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700"
+          onClick={goToNext}
+        >
+          {">"}
+        </button>
+      </div>
+    );
   };
-
-  const handleAccept = async (id) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/admin/members?id=${id}`,
-        {
-          method: "POST",
-          headers: {
-            authorization: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      } else {
-        handleDecline(id);
-      }
-
-      setMembers((prevMembers) =>
-        prevMembers.filter((member) => member.id !== id)
-      );
-    } catch (error) {
-      console.error("Error accepting member:", error);
-    }
-  };
-
-  const handleDecline = async (id) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/admin/members?id=${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            authorization: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      setMembers((prevMembers) =>
-        prevMembers.filter((member) => member.id !== id)
-      );
-    } catch (error) {
-      console.error("Error declining member:", error);
-    }
-  };
-
-  // Unauthorized access
-  if (session?.user?.role !== "admin") {
-    return <div className="text-center text-red-500">Unauthorized access.</div>;
-  }
 
   return (
     <>
-    <div className="flex w-full flex-col xl:flex-row">
-      <NAV />
-      <div className="flex  flex-col w-full px-4 sm:px-6 py-4 sm:py-6 gap-6 bg-gray-100 md:overflow-y-auto md:h-[100vh]">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-800 text-center">
-          Requested Members List
-        </h1>
-        {members.length === 0 ? (
-          <p className="text-gray-600 text-lg text-center">No members found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr className="text-gray-700 text-left uppercase text-sm leading-normal">
-                  <th className="py-3 px-2 sm:px-4 border-b">EC</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Name</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Email</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Contact Number</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Designation</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Role</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Preview Files</th>
-                  <th className="py-3 px-2 sm:px-4 border-b">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-600 text-sm font-light">
-                {members.map((member, index) => (
-                  <tr key={member.id} className={`hover:bg-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                    <td className="py-3 px-2 sm:px-4 border-b">{member.employee_id}</td>
-                    <td className="py-3 px-2 sm:px-4 border-b">{member.fullName}</td>
-                    <td className="py-3 px-2 sm:px-4 border-b">{member.email}</td>
-                    <td className="py-3 px-2 sm:px-4 border-b">{member.contactNumber}</td>
-                    <td className="py-3 px-2 sm:px-4 border-b">{member.designation}</td>
-                    <td className="py-3 px-2 sm:px-4 border-b">{member.Role}</td>
+      {isPopupVisible && (
+        <DeleteAlert
+          message={message}
+          onConfirm={() => console.log("Confirmed delete")}
+          onCancel={() => setIsPopupVisible(false)}
+        />
+      )}
 
-                    <td className="py-3 px-2 sm:px-4 border-b">
-                      <div className="flex flex-col gap-2">
-                        <button
-                          onClick={() => handleFetchPdf(member.bmcLetter, "form_empty", member.id)}
-                          className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded flex items-center gap-2 text-sm sm:text-base"
-                        >
-                          <i className="fas fa-file-pdf"></i> BMC Letter
-                        </button>
+      <EditBox isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
 
-                        <button
-                          onClick={() => handleFetchPdf(member.bmcLetter50, "form_50", member.id)}
-                          className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded flex items-center gap-2 text-sm sm:text-base"
-                        >
-                          <i className="fas fa-file-pdf"></i> BMC 50 Letter
-                        </button>
+      <div className="flex w-full h-[100vh] xl:flex-row flex-col">
+        <NAV />
+        {data.length > 0 ? (
+          <div className="flex gap-3 h-full w-full flex-col overflow-y-scroll bg-[#141414] py-9 pr-8 pl-5">
+            <div className="w-full justify-start items-start mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search"
+                  className="w-[30%] px-4 py-3 pl-10 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
+                  required
+                />
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
+              </div>
+            </div>
+            <div className="p-10 rounded-xl flex items-center bg-[#1b1b1b] shadow-lg w-full ">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center w-[100%]">
+                {data.map((event, eventIndex) => (
+                  !event.isDeleted && (
+                    <div
+                      key={eventIndex}
+                      className="bg-[#202020] border-2 border-[#303030] shadow-lg rounded-xl w-[95%] h-[600px] flex flex-col"
+                    >
+                      <div className="relative rounded-xl bg-gradient-to-r from-[#1f1e1e] to-[#202020] px-6 py-4">
+                        <h3 className="text-white text-2xl font-bold font-sans tracking-wide">
+                          {event.eventTitle}
+                        </h3>
+                        <div className="absolute flex justify-center items-center top-2 right-2 gap-2">
+                          <button
+                            className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-6 py-2 rounded-xl flex items-center gap-1"
+                            onClick={() => console.log(`Edit event ID: ${event._id}`)}
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white text-sm px-6 py-2 rounded-xl flex items-center gap-1"
+                            onClick={() => console.log(`Delete event ID: ${event._id}`)}
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </div>
                       </div>
-                    </td>
 
-                    <td className="py-3 px-2 sm:px-4 border-b">
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <button
-                          onClick={() => handleAccept(member.id)}
-                          className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded flex items-center gap-2 text-sm sm:text-base transition duration-300 ease-in-out"
-                        >
-                          <i className="fas fa-check"></i> Accept
-                        </button>
-                        <button
-                          onClick={() => handleDecline(member.id)}
-                          className="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded flex items-center gap-2 text-sm sm:text-base transition duration-300 ease-in-out"
-                        >
-                          <i className="fas fa-times"></i> Decline
-                        </button>
+                      <div className="flex flex-col gap-4 p-4 items-center">
+                        {/* Custom Image Slider */}
+                        {event.screenshots && Array.isArray(event.screenshots) && event.screenshots.length > 0 ? (
+                          <CustomImageSlider images={event.screenshots} />
+                        ) : (
+                          <p className="text-white">No screenshots available for this event.</p>
+                        )}
+
+                        <div className="text-white space-y-2 w-[100%]">
+                          <p><strong>Associate:</strong> {event.associateName}</p>
+                          <p><strong>Location:</strong> {event.location}</p>
+                          <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                          <p><strong>Time:</strong> {event.time}</p>
+                          <p><strong>Type:</strong> {event.eventType}</p>
+                          <p><strong>Description:</strong> {event.eventDescription}</p>
+                          <p><strong>About Event:</strong> {event.aboutEvent}</p>
+                          {event.websiteLink && (
+                            <a
+                              className="text-blue-600 font-bold underline hover:text-blue-800 transition-colors duration-300"
+                              href={event.websiteLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Visit Website
+                            </a>
+                          )}
+                          {event.selectedCategories.length > 0 && (
+                            <p><strong>Categories:</strong> {event.selectedCategories.join(", ")}</p>
+                          )}
+                        </div>
                       </div>
-                    </td>
-                  </tr>
+                    </div>
+                  )
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </div>
+        ) : (
+          <div className="bg-[#141414] w-full h-full">No events available for your criteria.</div>
         )}
       </div>
-    </div>
-  </>
+    </>
   );
-}
+};
+
+export default ViewUpcommingEvent;

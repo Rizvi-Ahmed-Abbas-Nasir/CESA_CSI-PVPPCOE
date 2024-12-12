@@ -1,187 +1,172 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import Unauthorized from "../../Unauthorized";
+import { FaArrowRight, FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa"; 
 import NAV from "../../Navbar";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
+import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
+import toast from "react-hot-toast";
 
-export default function HonoraryManagementPage() {
-  const { data: session } = useSession();
-  const [honoraryList, setHonoraryList] = useState([]);
-  const [name, setName] = useState("");
-  const [role, setRole] = useState("");
-  const [statusMessage, setStatusMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true); // Track loading state
+const ViewUpcomingEvent = () => {
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [events, setEvents] = useState([]);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState([]);
+  
 
-
-  // Fetch honorary members
-  const fetchHonoraryMembers = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/admin/honorary`
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch honorary members.");
-      }
-      const result = await response.json();
-      setHonoraryList(result);
-    } catch (error) {
-      setStatusMessage(error.message);
-    } finally {
-      setIsLoading(false); // Set loading to false after fetching
-    }
-  };
-
-  // Fetch honorary members when component mounts
   useEffect(() => {
-    fetchHonoraryMembers();
+    const fetchEvents = async () => {
+      const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+
+      try {
+        const response = await axios.get("http://localhost:3000/api/gallery", {
+          headers: {
+            Authorization: API_KEY,
+          },
+        });
+        setEvents(response.data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchEvents();
   }, []);
+console.log(events)
+  const ImageSlider = ({ images }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    const goToPrevious = () => {
+      setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+    };
 
-    const honoraryData = { name, role };
+    const goToNext = () => {
+      setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+    };
 
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/admin/honorary`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            authorization: process.env.NEXT_PUBLIC_API_KEY,
-          },
-          body: JSON.stringify(honoraryData),
-        }
-      );
-
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error || "Failed to add honorary member.");
-      }
-
-      setStatusMessage("Honorary member added successfully.");
-      setName("");
-      setRole("");
-
-      // Refresh honorary members list
-      await fetchHonoraryMembers();
-    } catch (error) {
-      setStatusMessage(error.message);
-    }
+    return (
+      <div className="relative w-full h-[200px] flex items-center justify-center overflow-hidden">
+        <img
+          src={images[currentIndex]}
+          alt={`Slide ${currentIndex + 1}`}
+          className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-500 ease-in-out"
+        />
+        <button
+          className="absolute left-2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700"
+          onClick={goToPrevious}
+        >
+          {"<"}
+        </button>
+        <button
+          className="absolute right-2 bg-gray-800 text-white rounded-full p-2 hover:bg-gray-700"
+          onClick={goToNext}
+        >
+          {">"}
+        </button>
+      </div>
+    );
   };
-
-  // Handle delete
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_HOST}/api/admin/honorary?id=${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            authorization: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error || "Failed to delete honorary member.");
-      }
-
-      setStatusMessage("Honorary member deleted successfully.");
-      // Refresh honorary members list
-      await fetchHonoraryMembers();
-    } catch (error) {
-      setStatusMessage(error.message);
-    }
-  };
-
-  if (session?.user?.role !== "admin") {
-    return <Unauthorized />;
-  }
 
   return (
-    <div className="flex w-full xl:flex-row flex-col">
-    <NAV />
-    <div className="flex  flex-col w-full px-6 py-6 gap-6 bg-gray-100 md:overflow-y-auto md:h-[100vh]">
-      <h1 className="text-3xl font-bold mb-4">Honorary Management</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white shadow-md rounded-lg p-6 mb-8"
-      >
-        <h2 className="text-xl font-semibold mb-4">Add Honorary Member</h2>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">
-            Name:
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </label>
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">
-            Role:
-            <input
-              type="text"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              required
-              className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </label>
-        </div>
-        <button
-          type="submit"
-          className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300"
-        >
-          Add Honorary
-        </button>
-      </form>
-      {statusMessage && (
-        <p
-          className={`mb-4 text-sm ${
-            statusMessage.includes("successfully")
-              ? "text-green-600"
-              : "text-red-600"
-          }`}
-        >
-          {statusMessage}
-        </p>
+    <>
+      {isPopupVisible && (
+        <DeleteAlert
+          message="Are you sure you want to delete this event?"
+          onConfirm={() => console.log("Confirmed delete")}
+          onCancel={() => setIsPopupVisible(false)}
+        />
       )}
-      <h2 className="text-2xl font-semibold mb-4">
-        Existing Honorary Members
-      </h2>
-      {isLoading ? (
-        <p className="text-gray-600">Loading honorary members...</p>
-      ) : honoraryList.length > 0 ? (
-        <ul className="bg-white shadow-md rounded-lg p-6">
-          {honoraryList.map((member) => (
-            <li
-              key={member.honoraryId}
-              className="flex justify-between items-center mb-4 p-2 border-b"
-            >
-              <span className="text-lg font-medium">
-                {member.name} - {member.role}
-              </span>
-              <button
-                onClick={() => handleDelete(member.honoraryId)}
-                className="bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-md"
-              >
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-600">No honorary members available.</p>
-      )}
-    </div>
-  </div>
+
+      <EditBox isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+
+      <div className="flex w-full h-[100vh] xl:flex-row flex-col">
+        <NAV />
+        {events.length > 0 ? (
+          <div className="flex gap-3 h-full w-full flex-col overflow-y-scroll bg-[#141414] py-9 pr-8 pl-5">
+            <div className="w-full mb-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search"
+                  className="w-[30%] px-4 py-3 pl-10 border rounded-full focus:ring-2 focus:ring-gray-600 border-[#202020] bg-[#202020] outline-none text-white"
+                  required
+                />
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
+              </div>
+            </div>
+            <div className="p-10 rounded-xl bg-[#1b1b1b] shadow-lg w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center w-full">
+                {events.map((event) => (
+                  !event.isDeleted && (
+                    <div
+                      key={event._id}
+                      className="bg-[#202020] border-2 border-[#303030] shadow-lg rounded-xl w-[95%] h-[600px] flex flex-col"
+                    >
+                      <div className="relative rounded-xl bg-gradient-to-r from-[#1f1e1e] to-[#202020] px-6 py-4">
+                        <h3 className="text-white text-2xl font-bold font-sans tracking-wide">
+                          {event.eventTitle}
+                        </h3>
+                        <div className="absolute flex justify-center items-center top-2 right-2 gap-2">
+                          <button
+                            className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-6 py-2 rounded-xl"
+                            onClick={() => console.log(`Edit event ID: ${event._id}`)}
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white text-sm px-6 py-2 rounded-xl"
+                            onClick={() => console.log(`Delete event ID: ${event._id}`)}
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-4 p-4 items-center">
+                        {event.screenshots && event.screenshots.length > 0 ? (
+                          <ImageSlider images={event.screenshots} />
+                        ) : (
+                          <p className="text-white">No screenshots available for this event.</p>
+                        )}
+
+                        <div className="text-white space-y-2 w-full">
+                          <p><strong>Associate:</strong> {event.associateName}</p>
+                          <p><strong>Location:</strong> {event.location}</p>
+                          <p><strong>Date:</strong> {new Date(event.date).toLocaleDateString()}</p>
+                          <p><strong>Time:</strong> {event.time}</p>
+                          <p><strong>Type:</strong> {event.eventType}</p>
+                          <p><strong>Description:</strong> {event.description}</p>
+                          {event.websiteLink && (
+                            <a
+                              className="text-blue-600 font-bold underline hover:text-blue-800 transition-colors duration-300"
+                              href={event.websiteLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Visit Website
+                            </a>
+                          )}
+                          {event.selectedCategories.length > 0 && (
+                            <p><strong>Categories:</strong> {event.selectedCategories.join(", ")}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-[#141414] w-full h-full">No events available for your criteria.</div>
+        )}
+      </div>
+    </>
   );
-}
+};
+
+export default ViewUpcomingEvent;
+

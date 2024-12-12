@@ -36,7 +36,7 @@ const AdminHeader = () => {
               </Link>
             </li>
             <li>
-              <Link href="/Admin/Members" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
+              <Link href="/Admin/viewupcoming" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
                 <FaClipboardList className="mr-2" />
                 <span className="font-medium text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">View Upcoming</span>
               </Link>
@@ -48,7 +48,7 @@ const AdminHeader = () => {
               </Link>
             </li>
             <li>
-              <Link href="/Admin/Members" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
+              <Link href="/Admin/viewevents" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
                 <FaClipboardList className="mr-2" />
                 <span className="font-medium text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">View Event</span>
               </Link>
@@ -60,17 +60,17 @@ const AdminHeader = () => {
               </Link>
             </li>
             <li>
-              <Link href="/Admin/Members" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
+              <Link href="/Admin/viewgallery" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
                 <FaClipboardList className="mr-2" />
                 <span className="font-medium text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">View Gallery</span>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link href="/Admin/honorory" className="flex items-center p-2 rounded-lg hover:bg-[#272626]">
                 <FaUserFriends className="mr-2" />
                 <span className="font-medium text-sm md:text-base lg:text-lg xl:text-xl whitespace-nowrap">Add Members</span>
               </Link>
-            </li>
+            </li> */}
           </ul>
         </nav>
       </div>
