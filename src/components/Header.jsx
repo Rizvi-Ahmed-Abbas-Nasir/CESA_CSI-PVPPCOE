@@ -8,36 +8,12 @@ import { usePathname } from "next/navigation"; // For App Router, if using Pages
 
 export default function Header() {
   const [active, setActive] = useState(false);
-  const [mounted, setMounted] = useState(false); // Ensures client-side rendering
   const pathname = usePathname(); // Get the current path
 
-  useEffect(() => {
-    setMounted(true);
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", isSticky);
-    }
-
-    return () => {
-      if (typeof window !== "undefined") {
-        window.removeEventListener("scroll", isSticky);
-      }
-    };
-  }, []);
-
-  const isSticky = (e) => {
-    const header = document.querySelector(".header-section");
-    const scrollTop = window.scrollY;
-    scrollTop >= 80
-      ? header.classList.add("is-sticky")
-      : header.classList.remove("is-sticky");
-  };
-
-  // If the component hasn't mounted, don't render anything
-  if (!mounted) return null;
+  
 
   return (
-    <div className="fixed Header w-full header-section top-0 flex justify-center left-0 z-50 border-b border-n-7 lg:backdrop-blur-sm">
+    <div className="fixed  w-full  top-0 flex justify-center left-0 z-50 ">
       <div className="lg:h-[10.5vh] h-[10vh] w-full flex justify-between items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <div className="flex items-center gap-1 md:gap-2 w-[20rem]">
           <div>
@@ -49,7 +25,7 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="hidden uppercase w-[45%] xl:flex justify-start text-n-1 transition-colors hover:text-color-1">
+        {/* <div className="hidden uppercase w-[45%] xl:flex justify-start text-n-1 transition-colors hover:text-color-1">
           <ul className="flex justify-center gap-15 text-xs text-neutral-100">
             <li>
               <Link href="/" className={`${
@@ -98,18 +74,18 @@ export default function Header() {
               </Link>
             </li>
           </ul>
-        </div>
-        <Link href="/login" className="cursor-pointer ">
+        </div> */}
+        {/* <Link href="/login" className="cursor-pointer ">
         <div className="text-n-1 contactOnHover xl:inline-flex hidden cursor-pointer rounded-xl text-xs w-[7rem] border-[2px] button relative items-center justify-center h-11 transition-colors hover:text-color-1">
             <h4>
              
                 Register
             </h4>
         </div>
-        </Link>
+        </Link> */}
 
         <div
-          className="HamBurgerIcon flex justify-center h-[8vh] items-center w-[4rem] rounded-2xl xl:hidden border-[2px]"
+          className="HamBurgerIcon flex justify-center h-[6vh] items-center w-[4rem] rounded-2xl  border-[2px]"
           onClick={() => setActive(!active)}
         >
           <label

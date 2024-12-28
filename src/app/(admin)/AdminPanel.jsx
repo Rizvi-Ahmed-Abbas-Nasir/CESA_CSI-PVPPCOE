@@ -15,8 +15,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import StudentProgressChart from "@/components/charts"
-import ProfileWithCharts from "@/components/CircularGraph"
+import StudentProgressChart from "./components/charts"
+import ProfileWithCharts from "./components/CircularGraph"
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
@@ -190,47 +190,52 @@ const AdminPanel = () => {
 
           {/* Users Table */}
           <div className="p-10 rounded-[1rem] bg-[#1b1b1b] shadow-lg w-full">
-            <div className="overflow-x-auto">
-              <div className="table w-full text-white rounded-lg">
-                <div className="table-header-group bg-[#202020] rounded-xl">
-                  <div className="table-row">
-                    <div className="table-cell px-4 py-2 border border-[#303030] font-bold">ID</div>
-                    <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Name</div>
-                    <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Email</div>
-                    <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Role</div>
-                    <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Status</div>
-                    <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Actions</div>
-                  </div>
-                </div>
-                <div className="table-row-group">
-                  {users.map((user) => (
-                    <div key={user.id} className="table-row">
-                      <div className="table-cell px-4 py-2 border border-[#303030]">{user.id}</div>
-                      <div className="table-cell px-4 py-2 border border-[#303030]">{user.name}</div>
-                      <div className="table-cell px-4 py-2 border border-[#303030]">{user.email}</div>
-                      <div className="table-cell px-4 py-2 border border-[#303030]">{user.role}</div>
-                      <div className="table-cell px-4 py-2 border border-[#303030]">{user.status}</div>
-                      <div className="table-cell px-4 py-2 border border-[#303030]">
-                        <button
-                          className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-2 rounded-xl mr-2"
-                          onClick={() => console.log(`Edit user ID: ${user.id}`)}
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-xl"
-                          onClick={() => console.log(`Delete user ID: ${user.id}`)}
-                        >
-                          <FaTrashAlt />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-8">
-                <ProfileWithCharts studentData={studentData} />
-              </div>
+            <div className="overflow-x-auto flex flex-col gap-5 pb-[4rem] ">
+            <div className="flex w-full gap-6 justify-around">
+  <div className="table w-[70%] text-white rounded-[1rem] overflow-hidden"> {/* Added rounded and overflow-hidden */}
+    <div className="table-header-group bg-[#202020] rounded-t-[1rem]"> {/* Rounded top corners */}
+      <div className="table-row">
+        <div className="table-cell px-4 py-2 border border-[#303030] font-bold">ID</div>
+        <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Name</div>
+        <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Email</div>
+        <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Role</div>
+        <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Status</div>
+        <div className="table-cell px-4 py-2 border border-[#303030] font-bold">Actions</div>
+      </div>
+    </div>
+    <div className="table-row-group">
+      {users.map((user) => (
+        <div key={user.id} className="table-row border-t border-[#303030]">
+          <div className="table-cell px-4 py-2 border border-[#303030]">{user.id}</div>
+          <div className="table-cell px-4 py-2 border border-[#303030]">{user.name}</div>
+          <div className="table-cell px-4 py-2 border border-[#303030]">{user.email}</div>
+          <div className="table-cell px-4 py-2 border border-[#303030]">{user.role}</div>
+          <div className="table-cell px-4 py-2 border border-[#303030]">{user.status}</div>
+          <div className="table-cell px-4 py-2 border border-[#303030]">
+            <button
+              className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-2 rounded-xl mr-2"
+              onClick={() => console.log(`Edit user ID: ${user.id}`)}
+            >
+              <FaEdit />
+            </button>
+            <button
+              className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-xl"
+              onClick={() => console.log(`Delete user ID: ${user.id}`)}
+            >
+              <FaTrashAlt />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div className="mt-8 rounded-[1rem] overflow-hidden"> {/* Added rounded corners for the chart container */}
+    <ProfileWithCharts studentData={studentData} />
+  </div>
+</div>
+
+             
               <div className="flex flex-col items-center justify-center rounded-xl w-[100%] h-auto">
     <StudentProgressChart />
 </div>

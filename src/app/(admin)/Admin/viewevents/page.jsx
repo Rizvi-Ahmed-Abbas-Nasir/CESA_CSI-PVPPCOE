@@ -16,6 +16,8 @@ const ViewUpcommingEvent = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+  
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -23,6 +25,8 @@ const ViewUpcommingEvent = () => {
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
       try {
+        setLoading(true);
+
         console.log("Fetching events data...");
         const response = await axios.get("http://localhost:3000/api/events", {
           headers: {
@@ -34,6 +38,10 @@ const ViewUpcommingEvent = () => {
       } catch (err) {
         console.error("Error fetching events:", err.message);
         setError(err.message);
+      }
+      finally{
+        setLoading(false);
+
       }
     };
 
@@ -78,6 +86,20 @@ const ViewUpcommingEvent = () => {
       </div>
     );
   };
+
+    if (loading) {
+      return (
+        <div className="relative w-full h-screen bg-[#141414]">
+          <NAV />
+          <div className="flex gap-3 h-full w-full flex-col  overflow-y-scroll bg-[#141414] py-9 pr-8 pl-5">
+            <div className="loader1 ease-linear rounded-full border-8 border-t-8 border-[#303030] bg-[#141414] h-[100px]  w-[100%]"></div>
+          </div>
+        </div>
+      );
+    }
+    
+
+
 
   return (
     <>

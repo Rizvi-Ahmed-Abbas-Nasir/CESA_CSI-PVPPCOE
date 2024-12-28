@@ -2,10 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+
+}
 
 body{
   background-color: #0e0c15;
   background-color: #000125;
+  overscroll-behavior: contain; /* Prevent unwanted scroll chaining */
+
 }
 
 .RoundedCard:hover{
@@ -29,6 +38,8 @@ body{
   transition:all 2s;
 
 }
+
+
 
 /* OnScroll Animation  */
 .hidden1{
@@ -183,8 +194,8 @@ transform:translateY(0px);
 }
 
 .is-sticky {
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: fixed;
   top: 0;
   left: 0;
@@ -192,15 +203,8 @@ transform:translateY(0px);
   display: flex;
   align-items: center;
   height: 9vh;
-  /* background: linear-gradient(135deg, rgba(17, 13, 29, 0.1), rgba(22, 18, 37, 0.1)); */
-  background-color: #161225;
-  
-  /* animation: 1s ease-in 500ms normal none 1 running fade-down; */
-  /* padding-top: 0px;
-  padding-bottom: 0px; */
-  transition: 500ms;
-
-
+  background-color: rgba(22, 18, 37, 0.8);
+  transition: all 0.5s ease-in-out;
 }
 
 
@@ -248,15 +252,26 @@ transform:translateY(0px);
   gap: 0.5rem;
   position: relative;
   z-index: 10;
-  justify-content: center;
-  align-items: center;
+  justify-content: start;
+  align-items: start;
   height: 100vh;
   width: 100%;
+  padding-top: 2.5rem;
+  padding-left: 2rem;
 }
 
 .text h2
 {
-  font-size: 8rem;
+  font-size: 13rem;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 130px;
+  text-transform: uppercase;
+
+}
+
+.textForCESA h2{
+  font-size: 13rem;
   font-weight: 800;
   color: #fff;
   margin-top: 130px;
@@ -312,7 +327,7 @@ transform:translateY(0px);
  .label .span{
   background: white;
   border-radius:50px;
-  height:3px;
+  height:2px;
   margin: 7% 0;
   transition: .4s  cubic-bezier(0.68, -0.6, 0.32, 1.6);
   margin-left: 0.5rem;
@@ -747,6 +762,7 @@ width: 300px;
 .bg-img-hover2 {
   background-image: url("../Assets/IMG/3d.png"); /* Hover background image */
 }
+
 
 /* responsive */
 
@@ -1249,6 +1265,8 @@ form.sign-in-form {
 }
 
 
+
+
 .spinner {
   width: 1rem; /* Adjust the size of the spinner */
   height: 1rem; /* Adjust the size of the spinner */
@@ -1453,3 +1471,5 @@ form.sign-in-form {
     left: 50%;
   }
 }
+
+
