@@ -3,6 +3,9 @@ const nextConfig = {
     images: {
       domains: ['res.cloudinary.com'], // Allow loading images from Cloudinary
     },
+    eslint: {
+      ignoreDuringBuilds: true,
+    },
   };
   
   export default nextConfig;

@@ -93,7 +93,7 @@ const App = () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", resizeCanvas);
     };
-  }, []);
+  }, [params.friction, params.pointsNumber, params.spring, params.widthFactor]);
 
   return (
     <canvas

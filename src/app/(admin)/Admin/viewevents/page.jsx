@@ -4,9 +4,10 @@ import { FaArrowRight, FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa";
 import NAV from "../../Navbar";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
-// import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
+import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
+import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 const ViewUpcommingEvent = () => {
   const [type, setType] = useState("");
@@ -62,7 +63,7 @@ const ViewUpcommingEvent = () => {
     return (
       <div className="relative w-full h-[200px] flex items-center justify-center ">
         {/* Image */}
-        <img
+        <Image
           src={images[currentIndex]}
           alt={`Screenshot ${currentIndex + 1}`}
           className="w-full h-full object-cover rounded-lg shadow-md"

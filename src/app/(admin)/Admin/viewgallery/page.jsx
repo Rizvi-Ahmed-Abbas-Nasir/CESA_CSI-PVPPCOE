@@ -7,6 +7,8 @@ import axios from "axios";
 import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
 import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
 import toast from "react-hot-toast";
+import Image from "next/image";
+
 
 const ViewUpcomingEvent = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -54,7 +56,7 @@ console.log(events)
 
     return (
       <div className="relative w-full h-[200px] flex items-center justify-center overflow-hidden">
-        <img
+        <Image
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
           className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-500 ease-in-out"

@@ -154,7 +154,7 @@ useEffect(() => {
       fetchData();
       fetchData2()
 
-}, [session, status]);
+}, [fetchData, fetchData2]);
 
 const handleDialogClose = () => {
     setIsDialogOpen(false);

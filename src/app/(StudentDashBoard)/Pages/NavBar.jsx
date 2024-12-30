@@ -55,7 +55,7 @@ export default function NavBar() {
 
   useEffect(() => {
     fetchStudentData();
-  }, [session, status]);
+  }, [fetchStudentData]);
 
   return (
     <div className="w-[95%] h-[97vh] flex rounded-xl items-center justify-start bg-blue-700">

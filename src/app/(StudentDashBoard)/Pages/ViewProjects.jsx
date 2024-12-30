@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { useSession } from "next-auth/react";
+import CustomAlert from "@/components/customAlert";
 import { FaThumbsUp, FaEye, FaCommentDots } from "react-icons/fa";
-
+import Image from "next/image";
 
 // import CustomAlert from "../components/customAlert";
 
@@ -160,7 +161,7 @@ const EventCompo = () => {
                     <div className="w-full md:w-1/2">
                       <h4 className="text-2xl font-semibold text-gray-800 mb-4">Event Photo:</h4>
                       {event.image && (
-                        <img
+                        <Image
                           src={event.image}
                           alt="Event"
                           className="w-full h-48 object-cover rounded-xl shadow-lg"
@@ -172,7 +173,7 @@ const EventCompo = () => {
                     {event.certificate && (
                       <div className="w-full md:w-1/2">
                         <h4 className="text-2xl font-semibold text-gray-800 mb-4">Certificate:</h4>
-                        <img
+                        <Image
                           src={event.certificate}
                           alt="Certificate"
                           className="w-full h-48 object-cover rounded-xl shadow-lg"

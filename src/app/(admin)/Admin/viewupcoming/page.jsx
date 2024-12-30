@@ -7,6 +7,8 @@ import axios from 'axios';
 import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
 import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
 import toast, { Toaster } from 'react-hot-toast';
+import Image from "next/image";
+
 
 const ViewUpcommingEvent = () => {
   const [type, setType] = useState("");
@@ -141,7 +143,7 @@ const ViewUpcommingEvent = () => {
 
         <div className="flex flex-col gap-4 p-4 items-center">
           {event.eventImage && (
-            <img
+            <Image
               src={event.eventImage}
               alt="Event"
               className="w-full h-[200px] object-cover rounded-lg shadow-md"

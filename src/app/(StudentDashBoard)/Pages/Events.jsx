@@ -6,6 +6,7 @@ import EditBox from "../Components/EditBox"
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import Alert from "../Components/Alert"
 import toast, { Toaster } from 'react-hot-toast';
+import Image from "next/image";
 
 
 // import CustomAlert from "../components/customAlert";
@@ -289,7 +290,7 @@ const handleDialogClose = () => {
               <div className="flex flex-col gap-6 p-6">
                 {event.image && (
                   <div className="w-full h-[280px]">
-                    <img
+                    <Image
                       src={event.image}
                       alt="Event"
                       className="w-full h-full object-cover rounded-lg shadow-md"

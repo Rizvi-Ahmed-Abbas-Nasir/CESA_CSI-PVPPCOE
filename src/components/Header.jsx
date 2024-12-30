@@ -17,7 +17,7 @@ export default function Header() {
       <div className="lg:h-[10.5vh] h-[10vh] w-full flex justify-between items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <div className="flex items-center gap-1 md:gap-2 w-[20rem]">
           <div>
-            <Image className="w-[4rem] md:w-[5rem]" src={Logo} width={50} height={50} />
+            <Image className="w-[4rem] md:w-[5rem]" src={Logo} width={50} height={50} alt="img" />
           </div>
           <div className="flex flex-col">
             <h3 className="text-n-1">CESA-CSI VPPCOE-VA</h3>
