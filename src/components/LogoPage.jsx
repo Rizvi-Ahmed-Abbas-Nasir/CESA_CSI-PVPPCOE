@@ -139,14 +139,14 @@ export default function Footer() {
         <div className="w-full  flex justify-center gap-5" >
           <div className="w-[50%] h-[50vh] bg-[#0d1238] shadow-xl rounded-xl RoundedCard2 cursor-pointer flex flex-col items-center justify-start p-8">
             <div>  <h1 className={ `${oswald.className} text-white w-full flex item-start text-[3.5rem]`}>CESA </h1></div>
-            <div><p className={` ${courgette.className}  text-white text-[1.2rem] pl-20 pr-20 pt-8`}> As a member of the Computer Society of India committee, you'll enjoy networking opportunities, skill development, access to the latest trends, career 
+            <div><p className={` ${courgette.className}  text-white text-[1.2rem] pl-20 pr-20 pt-8`}> As a member of the Computer Society of India committee, youll enjoy networking opportunities, skill development, access to the latest trends, career 
               advancement prospects, community contribution, recognition, and valuable resources.</p></div>
           
 
           </div>
           <div className="w-[50%] h-[50vh] bg-[#0d1238] shadow-xl rounded-xl RoundedCard2 cursor-pointer flex flex-col items-center justify-start p-8">
           <div>  <h1 className={ `${oswald.className} text-white w-full flex item-start text-[3.5rem]`}>CSI </h1></div>
-            <div><p className={` ${courgette.className}  text-white text-[1.2rem] pl-20 pr-20 pt-8`}> As a member of the Computer Society of India committee, you'll enjoy networking opportunities, skill development, access to the latest trends, career 
+            <div><p className={` ${courgette.className}  text-white text-[1.2rem] pl-20 pr-20 pt-8`}> As a member of the Computer Society of India committee, youll enjoy networking opportunities, skill development, access to the latest trends, career 
               advancement prospects, community contribution, recognition, and valuable resources.</p></div>
 
           </div>

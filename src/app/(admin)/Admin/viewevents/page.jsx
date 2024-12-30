@@ -4,8 +4,8 @@ import { FaArrowRight, FaSearch, FaTrashAlt, FaEdit } from "react-icons/fa";
 import NAV from "../../Navbar";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
-import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
+// import DeleteAlert from "../../../(StudentDashBoard)/Components/DeletePopUp";
+// import EditBox from "../../../(StudentDashBoard)/Components/EditBox";
 import toast from "react-hot-toast";
 
 const ViewUpcommingEvent = () => {

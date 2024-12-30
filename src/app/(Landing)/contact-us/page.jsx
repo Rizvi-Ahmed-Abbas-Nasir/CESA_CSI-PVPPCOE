@@ -71,7 +71,7 @@ try {
       <form className="bg-white pt-[5rem] p-15 xl:h-[55rem] shadow-md w-[20rem] h-[50rem] xl:w-[45rem] flex flex-col items-start">
         <div className="w-full flex flex-col gap-3">
         <div className="mb-6">
-          <h2 className=" text-[0.8rem] md:text-[1.2rem] font-bold text-blue-900">LET'S GROW YOUR BRAND ONLINE</h2>
+          <h2 className=" text-[0.8rem] md:text-[1.2rem] font-bold text-blue-900">LETS GROW YOUR BRAND ONLINE</h2>
           <h1 className=" text-[1rem] md:text-[2.5rem] font-bold text-blue-900">Start a conversation with us</h1>
         </div>
 
