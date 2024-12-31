@@ -129,7 +129,7 @@ const CompatibilityForm = () => {
   
       // Send data to the server using Axios
       await toast.promise(
-        axios.post("http://localhost:3000/api/events", data, {
+        axios.post("https://cesa-csi-pvppcoe.vercel.app/api/events", data, {
           headers: {
             Authorization: `${API_KEY}`,
             "Content-Type": "multipart/form-data",

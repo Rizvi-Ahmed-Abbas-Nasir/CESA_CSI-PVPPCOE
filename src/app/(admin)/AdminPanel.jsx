@@ -70,7 +70,7 @@ const AdminPanel = () => {
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
       try {
-        const response = await axios.get("http://localhost:3000/api/gallery", {
+        const response = await axios.get("https://cesa-csi-pvppcoe.vercel.app/api/gallery", {
           headers: {
             Authorization: API_KEY,
           },

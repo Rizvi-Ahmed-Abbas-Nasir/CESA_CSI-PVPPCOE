@@ -106,7 +106,7 @@ const TechnicalEventForm = () => {
   
       // Use toast.promise to handle loading, success, and error states
       await toast.promise(
-        axios.post('http://localhost:3000/api/upcommingevent', data, {
+        axios.post('https://cesa-csi-pvppcoe.vercel.app/api/upcommingevent', data, {
           headers: {
             Authorization: `${API_KEY}`,
             'Content-Type': 'multipart/form-data',

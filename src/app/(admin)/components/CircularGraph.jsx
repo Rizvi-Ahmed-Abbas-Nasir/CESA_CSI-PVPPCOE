@@ -14,7 +14,7 @@ const ProfileWithCharts = ({ studentData, handleEditClick }) => {
             {
                 label: 'Hackathons',
                 data: [5, 2],  // e.g., 5 completed, 2 remaining
-                backgroundColor: ['#4C51BF', '#e0e0e0'],  // Indigo for completed, gray for remaining
+                backgroundColor: ['#4C51BF', '#202020'],  // Indigo for completed, gray for remaining
                 borderWidth: 2,
             },
         ],
@@ -26,7 +26,7 @@ const ProfileWithCharts = ({ studentData, handleEditClick }) => {
             {
                 label: 'Internships',
                 data: [3, 1],  // e.g., 3 completed, 1 remaining
-                backgroundColor: ['#4C51BF', '#e0e0e0'],  // Indigo for completed, gray for remaining
+                backgroundColor: ['#4C51BF', '#202020'],  // Indigo for completed, gray for remaining
                 borderWidth: 2,
             },
         ],

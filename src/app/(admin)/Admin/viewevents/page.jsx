@@ -29,7 +29,7 @@ const ViewUpcommingEvent = () => {
         setLoading(true);
 
         console.log("Fetching events data...");
-        const response = await axios.get("http://localhost:3000/api/events", {
+        const response = await axios.get("https://cesa-csi-pvppcoe.vercel.app/api/events", {
           headers: {
             Authorization: API_KEY,
           },

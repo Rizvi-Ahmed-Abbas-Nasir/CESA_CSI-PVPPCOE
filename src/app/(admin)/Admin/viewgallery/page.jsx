@@ -26,7 +26,7 @@ const ViewUpcomingEvent = () => {
       try {
         setLoading(true);
 
-        const response = await axios.get("http://localhost:3000/api/gallery", {
+        const response = await axios.get("https://cesa-csi-pvppcoe.vercel.app/api/gallery", {
           headers: {
             Authorization: API_KEY,
           },

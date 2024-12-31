@@ -29,7 +29,7 @@ const ViewUpcommingEvent = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:3000/api/upcommingevent', {
+        const response = await axios.get('https://cesa-csi-pvppcoe.vercel.app/api/upcommingevent', {
           headers: {
             'Authorization': API_KEY,
           },

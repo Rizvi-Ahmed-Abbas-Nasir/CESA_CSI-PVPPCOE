@@ -47,7 +47,7 @@ const [isLoading, setIsLoading] = useState(false);
       console.log("API Key from client:", API_KEY); // Log to verify the API key
   
       const response = await toast.promise(
-        axios.post('http://localhost:3000/api/admin', data, {
+        axios.post('https://cesa-csi-pvppcoe.vercel.app/api/admin', data, {
           headers: {
             Authorization: `${API_KEY}`,
             'Content-Type': 'multipart/form-data',
