@@ -10,6 +10,7 @@ import axios from 'axios';
 export default function NavBar() {
   const { data: session, status } = useSession();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [studentData, setStudentData] = useState({
     name: "Your Name",
@@ -30,7 +31,7 @@ export default function NavBar() {
       try {
         setLoading(true); 
 
-        const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
+        const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/student?userId=${userID}`, {
           headers: {
             Authorization: `${API_KEY}`,
             "Content-Type": "application/json",
@@ -54,8 +55,11 @@ export default function NavBar() {
   };
 
   useEffect(() => {
-    fetchStudentData();
-  }, [fetchStudentData]);
+    if (status === "authenticated" && session && session.user) {
+      fetchStudentData();
+    }
+  }, [session, status]);  
+  
 
   return (
     <div className="w-[95%] h-[97vh] flex rounded-xl items-center justify-start bg-blue-700">

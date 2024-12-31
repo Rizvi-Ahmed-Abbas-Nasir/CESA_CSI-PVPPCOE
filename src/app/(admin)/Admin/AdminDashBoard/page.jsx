@@ -1,10 +1,7 @@
 "use client"
-import { useSession } from "next-auth/react";
-import AdminPanel from "../AdminLogin"
-import Unauthorized from "../Unauthorized"
+import AdminPanel from "../../AdminPanel"
 
 export default function Page() {
-  const { data: session } = useSession();
 
   return (
     <div className="bg-[#202020]">

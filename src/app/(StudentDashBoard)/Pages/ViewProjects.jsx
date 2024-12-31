@@ -31,7 +31,7 @@ const EventCompo = () => {
     
         try {
           setLoading(true);
-          const response = await axios.get(`http://localhost:3000/api/studentprojects?userId=${userID}`, {
+          const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/studentprojects?userId=${userID}`, {
             headers: {
               'Authorization': API_KEY, // Pass API key in Authorization header
             },
@@ -162,6 +162,8 @@ const EventCompo = () => {
                       <h4 className="text-2xl font-semibold text-gray-800 mb-4">Event Photo:</h4>
                       {event.image && (
                         <Image
+                        width={500}
+                        height={500}
                           src={event.image}
                           alt="Event"
                           className="w-full h-48 object-cover rounded-xl shadow-lg"
@@ -174,6 +176,8 @@ const EventCompo = () => {
                       <div className="w-full md:w-1/2">
                         <h4 className="text-2xl font-semibold text-gray-800 mb-4">Certificate:</h4>
                         <Image
+                          width={500}
+                          height={500}
                           src={event.certificate}
                           alt="Certificate"
                           className="w-full h-48 object-cover rounded-xl shadow-lg"

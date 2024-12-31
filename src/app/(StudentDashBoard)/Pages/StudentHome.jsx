@@ -22,6 +22,9 @@ export default function StudentHome() {
     const [data, setData] = useState([]);
     const [data2, setData2] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loading2, setLoading2] = useState(true);
+
+
     const [loadingImage, setLoadingImage] = useState(true); // Track loading state for image
 
     const [studentData, setStudentData] = useState({
@@ -47,7 +50,7 @@ const fetchStudentData = async () => {
 
         try {
             setLoading(true); 
-            const response = await axios.get(`http://localhost:3000/api/student?userId=${userID}`, {
+            const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/student?userId=${userID}`, {
                 headers: {
                     Authorization: `${API_KEY}`,
                     "Content-Type": "application/json",
@@ -75,7 +78,6 @@ const handleSave = () => {
     fetchStudentData(); // Fetch data after saving
 };
 
-
 const fetchData = async () => {
     if (status === "authenticated" && session && session.user) {
       const userID = session.user.id;
@@ -83,7 +85,7 @@ const fetchData = async () => {
 
       try {
         setLoading(true); // Set loading to true before fetching
-        const response = await axios.get(`http://localhost:3000/api/studentevent?userId=${userID}`, {
+        const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/studentevent?userId=${userID}`, {
           headers: {
             'Authorization': API_KEY, // Pass API key in Authorization header
           },
@@ -105,8 +107,8 @@ const fetchData = async () => {
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
       try {
-        setLoading(true); // Set loading to true before fetching
-        const response = await axios.get(`http://localhost:3000/api/studentprojects?userId=${userID}`, {
+        setLoading2(true); // Set loading to true before fetching (separate state)
+        const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/studentprojects?userId=${userID}`, {
           headers: {
             'Authorization': API_KEY, // Pass API key in Authorization header
           },
@@ -117,45 +119,45 @@ const fetchData = async () => {
       } catch (err) {
         setError(err.message); // Set error state if the API call fails
       } finally {
-        setLoading(false); // Set loading to false once the request is complete
+        setLoading2(false); // Set loading to false once the request is complete
       }
     }
   };
 
-useEffect(() => {
-       // Animate elements on scroll
-       if (typeof document !== "undefined") {
-        const hiddenElements1 = document.querySelectorAll(".hidden3");
-        const hiddenElements2 = document.querySelectorAll(".hidden2");
-        const hiddenElements3 = document.querySelectorAll(".hidden1");
-        const hiddenElements4 = document.querySelectorAll(".hidden4");
-
-        OnScrollAnimation(hiddenElements1);
-        OnScrollAnimation(hiddenElements2);
-        OnScrollAnimation(hiddenElements3);
-        OnScrollAnimation(hiddenElements4);
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      // Trigger data fetching when session is authenticated
+      fetchStudentData()
+      fetchData();
+      fetchData2();
     }
 
     // Simulating fetching events data with demo values
     const demoEvents = [
-        { eventId: 4, name: "Project D", progress: 50 },
+      { eventId: 4, name: "Project D", progress: 50 },
     ];
     setEvents(demoEvents);
 
     // Set initial demo progress values
     const initialProgress = {};
     demoEvents.forEach(event => {
-        initialProgress[event.eventId] = event.progress;
+      initialProgress[event.eventId] = event.progress;
     });
     setProgresses(initialProgress);
-    fetchStudentData(); // Initial fetch on mount
 
-  
-      fetchData();
-      fetchData2()
+    // Animate elements on scroll
+    if (typeof document !== "undefined") {
+      const hiddenElements1 = document.querySelectorAll(".hidden3");
+      const hiddenElements2 = document.querySelectorAll(".hidden2");
+      const hiddenElements3 = document.querySelectorAll(".hidden1");
+      const hiddenElements4 = document.querySelectorAll(".hidden4");
 
-}, [fetchData, fetchData2]);
-
+      OnScrollAnimation(hiddenElements1);
+      OnScrollAnimation(hiddenElements2);
+      OnScrollAnimation(hiddenElements3);
+      OnScrollAnimation(hiddenElements4);
+    }
+  }, [session, status]);
 const handleDialogClose = () => {
     setIsDialogOpen(false);
 };

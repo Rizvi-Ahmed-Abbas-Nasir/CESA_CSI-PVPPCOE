@@ -146,7 +146,7 @@ function CreateEvent() {
           const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
       
           // Make the API request
-          response = await axios.post(`http://localhost:3000/api/studentevent`, data, {
+          response = await axios.post(`https://cesa-csi-pvppcoe.vercel.app/api/studentevent`, data, {
             headers: {
               Authorization: `${API_KEY}`,
               'Content-Type': 'multipart/form-data' // Ensure we are sending form data

@@ -21,6 +21,8 @@ import ProfileWithCharts from "./components/CircularGraph"
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend);
 
 const AdminPanel = () => {
+    
+  
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
   const [error, setError] = useState(null);

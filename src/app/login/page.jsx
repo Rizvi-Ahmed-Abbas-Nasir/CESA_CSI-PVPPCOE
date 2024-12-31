@@ -7,6 +7,7 @@ import axios from "axios";
 import Image from "next/image";
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import toast from "react-hot-toast";
 
 export default function LoginAndRegister() {
 
@@ -40,12 +41,19 @@ export default function LoginAndRegister() {
         return;
       }
   
-      // Call signIn with credentials
-      const res = await signIn("credentials", {
-        redirect: false,
-        email: data.email,
-        password: data.password,
-      });
+      // Use toast.promise to handle loading, success, and error states
+      const res = await toast.promise(
+        signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+        }),
+        {
+          loading: 'Loading...',
+          success: <b>Login Success! Redirecting...</b>,
+          error: <b>Error during login. Please try again.</b>,
+        }
+      );
   
       // Handle the response
       if (res?.error) {
@@ -64,10 +72,7 @@ export default function LoginAndRegister() {
         return;
       }
   
-      if (res?.ok) {
-        // Successful login
-        alert("Login successful! Redirecting...");
-        
+      if (res?.ok) {  
         // Redirect to the dashboard
         router.push("/StudentDashBoard");
       }
@@ -77,6 +82,7 @@ export default function LoginAndRegister() {
       alert("An unexpected error occurred. Please try again later.");
     }
   };
+  
   
 
   // Handle registration form submission
@@ -103,7 +109,7 @@ export default function LoginAndRegister() {
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
       // Send data via axios
-      const response = await axios.post("http://localhost:3000/api/StudentRegistration", data, {
+      const response = await axios.post("https://cesa-csi-pvppcoe.vercel.app/api/StudentRegistration", data, {
         headers: { 
           Authorization: `${API_KEY}`,
           'Content-Type': 'application/json'

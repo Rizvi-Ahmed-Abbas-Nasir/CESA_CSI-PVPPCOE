@@ -57,6 +57,8 @@ console.log(events)
     return (
       <div className="relative w-full h-[200px] flex items-center justify-center overflow-hidden">
         <Image
+          width={500}
+          height={500}
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
           className="w-full h-full object-cover rounded-lg shadow-md transition-transform duration-500 ease-in-out"

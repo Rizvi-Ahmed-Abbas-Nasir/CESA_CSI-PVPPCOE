@@ -65,6 +65,8 @@ const ViewUpcommingEvent = () => {
         {/* Image */}
         <Image
           src={images[currentIndex]}
+          width={500}
+          height={500}
           alt={`Screenshot ${currentIndex + 1}`}
           className="w-full h-full object-cover rounded-lg shadow-md"
         />

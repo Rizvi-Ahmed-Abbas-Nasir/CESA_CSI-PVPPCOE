@@ -144,6 +144,8 @@ const ViewUpcommingEvent = () => {
         <div className="flex flex-col gap-4 p-4 items-center">
           {event.eventImage && (
             <Image
+            width={500}
+            height={500}
               src={event.eventImage}
               alt="Event"
               className="w-full h-[200px] object-cover rounded-lg shadow-md"

@@ -65,7 +65,7 @@ const [isDialogOpen, setIsDialogOpen] = useState(false);
     
         try {
           setLoading(true);
-          const response = await axios.get(`http://localhost:3000/api/studentevent?userId=${userID}`, {
+          const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/studentevent?userId=${userID}`, {
             headers: {
               'Authorization': API_KEY, // Pass API key in Authorization header
             },
@@ -292,6 +292,8 @@ const handleDialogClose = () => {
                   <div className="w-full h-[280px]">
                     <Image
                       src={event.image}
+                      width={500}
+                      height={500}
                       alt="Event"
                       className="w-full h-full object-cover rounded-lg shadow-md"
                     />
