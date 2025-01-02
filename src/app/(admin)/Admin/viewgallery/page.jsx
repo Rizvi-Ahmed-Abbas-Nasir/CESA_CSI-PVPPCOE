@@ -81,12 +81,14 @@ console.log(events)
 
   if (loading) {
         return (
-          <div className="relative w-full h-screen bg-[#141414]">
-            <NAV />
-            <div className="flex gap-3 h-full w-full flex-col  overflow-y-scroll bg-[#141414] py-9 pr-8 pl-5">
-              <div className="loader1 ease-linear rounded-full border-8 border-t-8 border-[#303030] bg-[#141414] h-[100px]  w-[100%]"></div>
-            </div>
-          </div>
+          <div className="relative flex justify-center items-center w-full h-screen bg-[#141414]">
+               <NAV />
+               <div className="flex gap-3 h-full w-full overflow-y-scroll bg-[#141414] py-9 pr-8 pl-5">
+                 <div className="flex justify-center items-center h-full w-full">
+                   <div className="loader1 ease-linear rounded-full border-8 border-t-8 border-[#303030] bg-[#141414] h-[100px] w-[100px]"></div>
+                 </div>
+               </div>
+             </div>
         );
       }
       
