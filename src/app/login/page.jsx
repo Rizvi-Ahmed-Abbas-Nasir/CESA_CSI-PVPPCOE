@@ -107,20 +107,26 @@ export default function LoginAndRegister() {
       };
 
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+      
 
-      // Send data via axios
-      const response = await axios.post("https://cesa-csi-pvppcoe.vercel.app/api/StudentRegistration", data, {
-        headers: { 
-          Authorization: `${API_KEY}`,
-          'Content-Type': 'application/json'
+      await toast.promise(
+        axios.post('https://cesa-csi-pvppcoe.vercel.app/api/StudentRegistration', data, {
+          headers: {
+            Authorization: `${API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }),
+        {
+          loading: 'Creating An Account...',
+          success: <b>Account created successfully!</b>,
+          error: <b>Could not save event. Please try again.</b>,
         }
-      });
+      );
 
       // Handle response
-      alert(response.data.message);
     } catch (error) {
       console.error("There was an error submitting the registration:", error);
-      alert("Failed to register. Please try again.");
+      console.log("Failed to register. Please try again.");
     }
 
 
