@@ -174,8 +174,8 @@ const handleDialogClose = () => {
             <div className="lg:w-[30%] w-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-200 bg-slate-50 ease-in-out relative">
             <div className="w-full flex flex-col items-center justify-center py-6">
                    {loading && (
-                        <div className="flex justify-center items-center h-48">
-                            <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
+                        <div className="flex justify-center items-center h-[20rem]">
+                            <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-[100%] w-20"></div>
                         </div>
                     )}
                     <Image 
@@ -208,7 +208,7 @@ const handleDialogClose = () => {
                 <div className="w-full flex justify-start items-center h-[60%] gap-20 mt-6">
                 <div className="w-full flex justify-evenly">
             {loading ? (
-                <div className="flex w-[100%] justify-center items-center h-48">
+                <div className="flex w-[20rem] justify-center items-center h-48">
                     <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
                 </div>
             ) : (
@@ -429,7 +429,7 @@ const handleDialogClose = () => {
                           >
                               {`${Math.round(progresses[event.eventId] || 0)}%`}
                           </Typography>
-                          
+
                       </Box>
                   </Box>
               </div>
