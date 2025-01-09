@@ -17,12 +17,10 @@ export const authOptions = {
           const { email, password } = credentials;
           console.log(`Email: ${email}, Password: ${password}`);
 
-          // Ensure the credentials are provided
           if (!email || !password) {
             throw new Error("Email and password are required.");
           }
 
-          // Connect to MongoDB
           try {
             await connectMongoDB();
           } catch (dbError) {
@@ -30,7 +28,6 @@ export const authOptions = {
             throw new Error("Failed to connect to the database. Please try again later.");
           }
 
-          // Find user by email
           let user;
           try {
             user = await Register.findOne({ StudentEmail: email });
@@ -44,7 +41,6 @@ export const authOptions = {
             throw new Error("No user found with this email.");
           }
 
-          // Check if the password is valid
           let isValidPassword;
           try {
             isValidPassword = await bcrypt.compare(password, user.StudentPassword);
@@ -58,7 +54,6 @@ export const authOptions = {
             throw new Error("Invalid password.");
           }
 
-          // If valid, return user data
           return {
             id: user._id,
             name: user.StudentName,

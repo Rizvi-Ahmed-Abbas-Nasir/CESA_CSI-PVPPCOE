@@ -13,7 +13,7 @@ const OuterCursor = styled.div`
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
-  border: 1px solid #ffd700;
+  border: 1px solid #1976d2;
   background-color: transparent;
   transform: translate(-50%, -50%);
 
@@ -25,7 +25,7 @@ const OuterCursor = styled.div`
 const InnerCursor = styled.div`
   width: 10px;
   height: 10px;
-  background-color: #ffd700;
+  background-color: #1976d2;
   border-radius: 50%;
   position: fixed;
   pointer-events: none;

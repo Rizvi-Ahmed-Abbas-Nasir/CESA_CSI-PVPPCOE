@@ -6,12 +6,12 @@ import HeaderDash from "@/app/(StudentDashBoard)/Pages/HeaderDash";
 
 export default function Home() {
   return (
-    <div className="bg-white w-full h-[100vh] flex justify-center items-center ">
-      <div className="w-[15%] flex justify-center">
+    <div className="bg-white flex w-full h-[100vh]  justify-center items-center ">
+      <div className="xl:w-[15%] w-[100%] hidden xl:flex justify-center">
         <NavBar />
       </div>
       
-      <div className=" w-[85%] h-[97vh] flex flex-col pr-8">
+      <div className=" xl:w-[85%] w-[90%] h-[97vh] flex flex-col p-1 xl:pr-8">
         <div className="h-[8vh]">
           <HeaderDash />
         </div>

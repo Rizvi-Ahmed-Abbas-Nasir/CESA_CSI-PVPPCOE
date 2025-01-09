@@ -51,7 +51,7 @@ export default function LoginAndRegister() {
         {
           loading: 'Loading...',
           success: <b>Login Success! Redirecting...</b>,
-          error: <b>Error during login. Please try again.</b>,
+          error: <b>Error during login. </b>,
         }
       );
   

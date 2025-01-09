@@ -75,7 +75,7 @@ const handleEditClick = () => {
 };
 
 const handleSave = () => {
-    fetchStudentData(); // Fetch data after saving
+    fetchStudentData();
 };
 
 const fetchData = async () => {
@@ -84,10 +84,10 @@ const fetchData = async () => {
       const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
       try {
-        setLoading(true); // Set loading to true before fetching
+        setLoading(true); 
         const response = await axios.get(`https://cesa-csi-pvppcoe.vercel.app/api/studentevent?userId=${userID}`, {
           headers: {
-            'Authorization': API_KEY, // Pass API key in Authorization header
+            'Authorization': API_KEY, 
           },
         });
 
@@ -163,17 +163,16 @@ const handleDialogClose = () => {
 };
 
     return (
-        <div className="h-full flex flex-wrap gap-3 p-6 bg-opacity-10 backdrop-blur-md bg-white hover:bg-opacity-20  ">
+        <div className="  xl:h-[100%] flex flex-wrap gap-5 xl:p-6 p-2 bg-opacity-10 backdrop-blur-md bg-white hover:bg-opacity-20  ">
             <EditBox 
                 isOpen={isDialogOpen} 
                 onClose={handleDialogClose} 
                 studentData={studentData} 
                 onSave={handleSave} 
             />
-            <div className="w-full h-[50%] flex gap-3">
-            <div className="w-[30%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-200 bg-slate-50 ease-in-out relative">
+            <div className="w-full xl:w-full flex-col xl:flex-row h-[50%] flex gap-3">
+            <div className="lg:w-[30%] w-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-200 bg-slate-50 ease-in-out relative">
             <div className="w-full flex flex-col items-center justify-center py-6">
-                   {/* Image Loading Animation */}
                    {loading && (
                         <div className="flex justify-center items-center h-48">
                             <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
@@ -181,8 +180,8 @@ const handleDialogClose = () => {
                     )}
                     <Image 
                         src={studentData.image || abbas} 
-                        width={288} // Corresponds to 18rem (1 rem = 16px)
-                        height={288} // Corresponds to 18rem
+                        width={288} 
+                        height={288} 
                         className={`w-[18rem] h-[18rem] rounded-full ${loading ? 'hidden' : ''}`} 
                         alt="Student Image" 
                        
@@ -197,7 +196,8 @@ const handleDialogClose = () => {
 
             </div>
 
-            <div className="w-[70%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white p-4 relative">
+            <div className=" xl:w-[70%] w-[100%] flex-col lg:flex-row flex justify-between rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white p-4 relative">
+                <div clasName="w-[50rem]">
                 <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Profile</h3>
                 <button 
                     className="absolute top-2 right-2 bg-blue-500 text-white py-1 px-2 rounded-lg shadow-md hover:bg-blue-600"
@@ -208,12 +208,10 @@ const handleDialogClose = () => {
                 <div className="w-full flex justify-start items-center h-[60%] gap-20 mt-6">
                 <div className="w-full flex justify-evenly">
             {loading ? (
-                // Show the loading spinner while fetching data
-                <div className="flex justify-center items-center h-48">
+                <div className="flex w-[100%] justify-center items-center h-48">
                     <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-20 w-20"></div>
                 </div>
             ) : (
-                // Show student data once loading is complete
                 <div className="w-[100%]">
                     <div className="flex items-center mt-2">
                         <h3 className="text-gray-600 text-[1.3rem]">NAME:</h3>
@@ -242,17 +240,16 @@ const handleDialogClose = () => {
                 </div>
             )}
         </div>
-                    <div className=""><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
+        </div>
+        </div>
+                    <div className="xl:w-[70%] w-[100%] flex items-center justify-center "><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
                    
 
-                </div>
             </div>
 
 
             </div>
-
-            {/* Second Row */}
-            <div className="w-full h-[200%] flex gap-3">
+            <div className="w-full h-[300%] xl:h-[200%] flex  flex-col xl:flex-row gap-3">
                 <div className="w-full h-full flex flex-col gap-5">
                 <div className="w-[100%] h-full items-center justify-around flex rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white  ease-in-out p-4">
                 <div className="flex flex-col items-center justify-center rounded-xl w-[100%] h-auto">
@@ -261,12 +258,12 @@ const handleDialogClose = () => {
 
               
              </div>
-                <div className="w-[100%] h-full items-center justify-around flex rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white  ease-in-out p-4">
+                <div className="w-[100%] flex-col xl:flex-row  h-full items-center justify-around flex rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white  ease-in-out p-4">
               
               
-                <div className="flex flex-col border items-center justify-center rounded-xl w-[40%] h-auto">
+                <div className="flex flex-col  items-center p-4 justify-center rounded-xl w-[100%]  xl:w-[40%] h-auto">
                     
-    <div className="mb-4">Overall Progress</div>
+    <div className="mb-4">Activity Progress</div>
     <div className="w-full">
         {events.map((event) => (
             <div key={event.eventId} className="mb-4 p-6">
@@ -284,11 +281,11 @@ const handleDialogClose = () => {
                         variant="determinate"
                         value={progresses[event.eventId] || 0}
                         sx={{
-                            height: 15, // Adjust height for a thicker progress bar
-                            borderRadius: 5, // Make the edges rounded
-                            backgroundColor: '#e0e0e0', // Background of the progress bar
+                            height: 15, 
+                            borderRadius: 5, 
+                            backgroundColor: '#e0e0e0', 
                             '& .MuiLinearProgress-bar': {
-                                backgroundColor: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', // Color based on completion
+                                backgroundColor: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', 
                             },
                         }}
                     />
@@ -298,11 +295,11 @@ const handleDialogClose = () => {
                         variant="determinate"
                         value={progresses[event.eventId] || 0}
                         sx={{
-                            height: 15, // Adjust height for a thicker progress bar
-                            borderRadius: 5, // Make the edges rounded
-                            backgroundColor: '#e0e0e0', // Background of the progress bar
+                            height: 15, 
+                            borderRadius: 5, 
+                            backgroundColor: '#e0e0e0',
                             '& .MuiLinearProgress-bar': {
-                                backgroundColor: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', // Color based on completion
+                                backgroundColor: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', 
                             },
                         }}
                     />
@@ -312,15 +309,16 @@ const handleDialogClose = () => {
                         variant="determinate"
                         value={progresses[event.eventId] || 0}
                         sx={{
-                            height: 15, // Adjust height for a thicker progress bar
-                            borderRadius: 5, // Make the edges rounded
-                            backgroundColor: '#e0e0e0', // Background of the progress bar
+                            height: 15, 
+                            borderRadius: 5, 
+                            backgroundColor: '#e0e0e0', 
                             '& .MuiLinearProgress-bar': {
-                                backgroundColor: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', // Color based on completion
+                                backgroundColor: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', 
                             },
                         }}
                     />
                 </Box>
+               
                 </div>
             </div>
         ))}
@@ -330,8 +328,8 @@ const handleDialogClose = () => {
 
  
 
-<div className="flex flex-col border items-center justify-center rounded-xl w-[25%] h-[60%] ">
-    <div className="mb-4">Overall Progress</div>
+<div className="flex flex-col  items-center justify-center rounded-xl w-[25%] h-[60%] ">
+    <div className="mb-4">Skills Progress</div>
     <div className="flex flex-wrap justify-around w-full">
         {events.map((event) => (
             <div key={event.eventId} className="flex flex-col items-center mb-4 mx-2">
@@ -344,18 +342,18 @@ const handleDialogClose = () => {
                             justifyContent: 'center',
                             border: '2px solid gray',
                             borderRadius: '50%',
-                            width: '120px',  // Circular container size
-                            height: '120px', // Circular container size
+                            width: '120px',  
+                            height: '120px', 
                         }}
                     >
                         <CircularProgress
                             variant="determinate"
                             value={progresses[event.eventId] || 0}
-                            size={110} // Circle size
-                            thickness={6} // Adjust the thickness to match the rounded look
+                            size={110} 
+                            thickness={6} 
                             style={{
-                                color: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', // Green for 100%, Blue for <100%
-                                strokeLinecap: 'round', // Add rounding at the ends of the circle progress bar
+                                color: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', 
+                                strokeLinecap: 'round', 
                             }}
                         />
                         <Box
@@ -370,7 +368,7 @@ const handleDialogClose = () => {
                                 variant="caption" 
                                 component="div" 
                                 color="textSecondary" 
-                                fontSize={22} // Font size for percentage
+                                fontSize={22} 
                                 fontWeight="bold"
                             >
                                 {`${Math.round(progresses[event.eventId] || 0)}%`}
@@ -385,8 +383,8 @@ const handleDialogClose = () => {
                 </div>
 
                 <div className="w-[100%] h-full items-center flex rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white  p-4">
-                <div className="w-[100%] h-full items-center justify-around flex " >
-                <div className="flex flex-col border items-center justify-center rounded-xl w-[25%] h-[60%] ">
+                <div className="w-[100%] flex-col xl:flex-row h-full items-center justify-around flex " >
+                <div className="flex flex-col  items-center justify-center rounded-xl w-[25%] h-[60%] ">
   <div className="mb-4">Overall Progress</div>
   <div className="flex flex-wrap justify-around w-full">
       {events.map((event) => (
@@ -400,18 +398,18 @@ const handleDialogClose = () => {
                           justifyContent: 'center',
                           border: '2px solid gray',
                           borderRadius: '50%',
-                          width: '120px',  // Circular container size
-                          height: '120px', // Circular container size
+                          width: '120px',  
+                          height: '120px', 
                       }}
                   >
                       <CircularProgress
                           variant="determinate"
                           value={progresses[event.eventId] || 0}
-                          size={110} // Circle size
-                          thickness={6} // Adjust the thickness to match the rounded look
+                          size={110} 
+                          thickness={6} 
                           style={{
-                              color: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', // Green for 100%, Blue for <100%
-                              strokeLinecap: 'round', // Add rounding at the ends of the circle progress bar
+                              color: (progresses[event.eventId] || 0) === 100 ? '#4caf50' : '#1976d2', 
+                              strokeLinecap: 'round', 
                           }}
                       />
                       <Box
@@ -426,11 +424,12 @@ const handleDialogClose = () => {
                               variant="caption" 
                               component="div" 
                               color="textSecondary" 
-                              fontSize={22} // Font size for percentage
+                              fontSize={22} 
                               fontWeight="bold"
                           >
                               {`${Math.round(progresses[event.eventId] || 0)}%`}
                           </Typography>
+                          
                       </Box>
                   </Box>
               </div>
@@ -438,25 +437,24 @@ const handleDialogClose = () => {
       ))}
   </div>
 </div>
-                <div className="flex flex-col border items-center justify-center rounded-xl w-[40%] h-auto">
+                <div className="flex flex-col  items-center justify-center rounded-xl xl:w-[40%] w-[100%] xl:h-auto">
     <div className="mb-4">Overall Progress</div>
-    <div className="flex justify-around w-full">
+    <div className="flex justify-around w-full f">
         {events.map((event) => (
             <div key={event.eventId} className="flex flex-col items-center mx-2">
-                {/* Event name above the progress bar */}
                 <div className="mb-2 font-semibold">{event.eventName}</div>
                 <div className="flex gap-5">
                     <div>
                     <Box
                     sx={{
-                        height: '150px', // Adjust the height for a taller bar
+                        height: '150px',
                         width: '20px', // Adjust the width for a thinner vertical bar
                         display: 'flex',
                         alignItems: 'flex-end', // Align the progress at the bottom
                         justifyContent: 'center',
-                        backgroundColor: '#e0e0e0', // Background for the container
-                        borderRadius: '10px', // Rounding edges for a smooth look
-                        overflow: 'hidden', // To ensure content is properly contained within borders
+                        backgroundColor: '#e0e0e0', 
+                        borderRadius: '10px', 
+                        overflow: 'hidden', 
                     }}
                 >
                     {/* Inner container to control the progress */}
@@ -543,21 +541,18 @@ const handleDialogClose = () => {
            
                 </div>
                 {/* Second Content Section */}
-                <div className="w-[30%] h-[100%] flex flex-col gap-3">
+                <div className="xl:w-[30%] xl:h-[100%] w-[100%] flex flex-col gap-3">
                 <div className="w-[100%] h-[100%] rounded-xl bg-opacity-10 backdrop-blur-md border border-gray-300 bg-white hover:bg-opacity-20 hover:shadow-2xl transition-all duration-300 ease-in-out p-4">
   <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Activities</h3>
   <p className="text-gray-600 mt-3">View all your activities.</p>
 
-  {/* Loading Animation */}
   {loading ? (
     <div className="flex justify-center items-center mt-6 w-full h-full">
       <div className="loader"></div> {/* Add your CSS spinner here */}
     </div>
   ) : error ? (
-    // Display error message if any error occurs during fetching
     <p className="mt-4 text-gray-800">No Activity Found!!!</p>
   ) : (
-    // Scrollable container for fetched data
     <div className="mt-4 overflow-y-auto max-h-[650px]">
       {data.length > 0 ? (
         data.map((event, index) => (
@@ -579,16 +574,13 @@ const handleDialogClose = () => {
   <h3 className="text-gray-800 text-[1.5rem] font-semibold">Your Activities</h3>
   <p className="text-gray-600 mt-3">View all your activities.</p>
 
-  {/* Loading Animation */}
   {loading ? (
     <div className="flex justify-center items-center mt-6 w-full h-full">
-      <div className="loader"></div> {/* Add your CSS spinner here */}
+      <div className="loader"></div> 
     </div>
   ) : error ? (
-    // Display error message if any error occurs during fetching
     <p className="mt-4 text-gray-800">No Activity Found!!!</p>
   ) : (
-    // Scrollable container for fetched data
     <div className="mt-4 overflow-y-auto max-h-[650px]">
       {data2.length > 0 ? (
         data2.map((event, index) => (
@@ -608,6 +600,8 @@ const handleDialogClose = () => {
 
                 </div>
             </div>
+
+           
         </div>
    
     );
