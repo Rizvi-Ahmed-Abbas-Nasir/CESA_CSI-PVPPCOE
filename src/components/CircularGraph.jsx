@@ -31,7 +31,7 @@ const ProfileWithCharts = ({ studentData, handleEditClick }) => {
     };
 
     return (
-        <div className="w-full flex lg:flex-row flex-col :justify-end xl:items-end justify-start item-start gap-10 py-8">
+        <div className="w-full flex lg:flex-row flex-col xl:justify-end xl:items-end justify-start item-start gap-10 py-8">
             <div className="xl:w-[100%] w-[100%] h-[50%] xl:h-[100%] flex flex-col items-center justify-center">
                 <h4 className="text-gray-800 font-semibold text-center text-2xl mb-4">Hackathons</h4>
                 <div className="relative w-[220px] h-[220px] flex items-center justify-center">

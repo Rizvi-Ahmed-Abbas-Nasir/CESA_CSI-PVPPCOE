@@ -242,7 +242,7 @@ const handleDialogClose = () => {
         </div>
         </div>
         </div>
-                    <div className="xl:w-[70%] w-[100%] flex items-center justify-center "><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
+                    <div className="xl:w-[65%] lg:w-[60%] w-[100%] flex items-center justify-center "><ProfileWithCharts studentData={studentData} handleEditClick={handleEditClick} /> </div>
                    
 
             </div>
