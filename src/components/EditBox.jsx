@@ -66,7 +66,7 @@ const EditBox = ({ isOpen, onClose, studentData, onSave }) => {
             const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
     
             try {
-                const response = await axios.put("http://localhost:3000/api/student", formDataToSubmit, {
+                const response = await axios.put("https://cesa-csi-pvppcoe.vercel.app/api/student", formDataToSubmit, {
                     headers: {
                         Authorization: `${API_KEY}`,
                         'Content-Type': 'multipart/form-data' // Ensure we are sending form data
